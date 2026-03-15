@@ -83,3 +83,7 @@ npm run dev
 ```
 
 Requires a modern browser with webcam access for CPR training. AI features require API keys configured in the settings panel (Gemini or OpenAI).
+
+
+##Links
+飞书：https://my.feishu.cn/docx/R0DrdkDcqoJnxgx6RlxcudOyn3c?from=from_copylink
