@@ -1,0 +1,41 @@
+{
+  "id": "2",
+  "name": "Ms. Li",
+  "age": 28,
+  "gender": "Female",
+  "initialComplaint": "I have this nagging cough that just won't go away. It's really annoying.",
+  "hiddenDetails": {
+    "duration": "About 2 weeks now.",
+    "triggers": "It seems worse at night and when I'm at the gym.",
+    "pastHistory": "I had eczema as a child. No other major issues.",
+    "associatedSymptoms": "Sometimes I feel a bit tight in my chest, like I can't get a full breath.",
+    "lifestyle": "Non-smoker. I work in an office. I have a new cat.",
+    "familyHistory": "My mum has hay fever and my younger brother has asthma.",
+    "drugHistory": "Just over-the-counter cough syrup. It doesn't help much. No allergies.",
+    "reviewOfSystems": "No fever, no weight loss, no night sweats. Sometimes a bit wheezy."
+  },
+  "physicalExam": [
+    { "system": "Respiratory", "finding": "Expiratory wheeze heard throughout both lung fields." },
+    { "system": "Skin", "finding": "Dry, scaly patches on flexural surfaces of elbows." }
+  ],
+  "correctDiagnosis": "Asthma",
+  "difficulty": "medium",
+  "differentials": ["Post-nasal Drip", "GERD-related Cough", "Allergic Bronchitis"],
+  "redFlags": ["hemoptysis", "significant weight loss", "stridor"],
+  "mustAskItems": [
+    { "dimension": "HPC", "subItem": "cough duration and character", "critical": true, "hint": "How long have you had this cough?" },
+    { "dimension": "HPC", "subItem": "timing and triggers", "critical": true, "hint": "When is the cough worst?" },
+    { "dimension": "HPC", "subItem": "chest tightness or wheeze", "critical": true, "hint": "Do you get any tightness or wheezing?" },
+    { "dimension": "HPC", "subItem": "sputum production", "critical": false, "hint": "Do you cough up anything?" },
+    { "dimension": "PMH", "subItem": "atopic history (eczema, allergies)", "critical": true, "hint": "Have you had eczema, hay fever, or allergies?" },
+    { "dimension": "FH", "subItem": "family history of atopy/asthma", "critical": true, "hint": "Does anyone in your family have asthma or allergies?" },
+    { "dimension": "SH", "subItem": "smoking status", "critical": true, "hint": "Do you smoke?" },
+    { "dimension": "SH", "subItem": "occupational and home environment", "critical": true, "hint": "Any new pets or changes at home?" },
+    { "dimension": "DH", "subItem": "current medications tried", "critical": false, "hint": "Have you tried any medications for this?" },
+    { "dimension": "ROS", "subItem": "fever or systemic symptoms", "critical": false, "hint": "Have you had any fevers or night sweats?" },
+    { "dimension": "ICE", "subItem": "impact on daily life", "critical": false, "hint": "How is this affecting your day?" },
+    { "dimension": "COMM", "subItem": "introduction and rapport", "critical": false }
+  ],
+  "personality": "Energetic young professional, slightly anxious. Talkative and forthcoming with details if asked. Worried she might have something serious.",
+  "speechPatterns": ["[*dry cough*]", "Sorry, one sec—", "It's just so annoying, you know?"]
+}

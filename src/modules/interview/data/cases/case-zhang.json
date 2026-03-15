@@ -1,0 +1,44 @@
+{
+  "id": "1",
+  "name": "Mr. Zhang",
+  "age": 62,
+  "gender": "Male",
+  "initialComplaint": "I have been feeling a bit short of breath lately, especially when I walk to the market.",
+  "hiddenDetails": {
+    "duration": "It started about 3 months ago and has been getting worse.",
+    "triggers": "Mainly physical exertion. It gets better when I sit down for a few minutes.",
+    "pastHistory": "I have high blood pressure, but I sometimes forget to take my pills.",
+    "associatedSymptoms": "My ankles have been looking a bit swollen in the evenings.",
+    "lifestyle": "I smoked for 30 years but quit 5 years ago. I don't exercise much.",
+    "familyHistory": "My father had a heart attack at 58. My mother had diabetes.",
+    "drugHistory": "I take amlodipine for blood pressure but often forget. No other medications.",
+    "reviewOfSystems": "Some occasional chest tightness on exertion. No palpitations. Needing two pillows to sleep comfortably lately."
+  },
+  "physicalExam": [
+    { "system": "Cardiovascular", "finding": "Displaced apex beat, S3 gallop heard on auscultation." },
+    { "system": "Respiratory", "finding": "Fine crackles at both lung bases." },
+    { "system": "Extremities", "finding": "2+ pitting edema in both ankles." }
+  ],
+  "correctDiagnosis": "Congestive Heart Failure",
+  "difficulty": "easy",
+  "differentials": ["Pulmonary Embolism", "COPD Exacerbation", "Valvular Heart Disease"],
+  "redFlags": ["acute chest pain", "syncope", "sudden severe dyspnea at rest"],
+  "mustAskItems": [
+    { "dimension": "HPC", "subItem": "onset and duration of breathlessness", "critical": true, "hint": "When did the shortness of breath start?" },
+    { "dimension": "HPC", "subItem": "aggravating factors", "critical": true, "hint": "What makes your breathing worse?" },
+    { "dimension": "HPC", "subItem": "relieving factors", "critical": false, "hint": "Does anything help with the breathing?" },
+    { "dimension": "HPC", "subItem": "orthopnea or PND", "critical": true, "hint": "How do you sleep at night? Do you use extra pillows?" },
+    { "dimension": "HPC", "subItem": "ankle swelling", "critical": true, "hint": "Have you noticed any swelling?" },
+    { "dimension": "PMH", "subItem": "hypertension history", "critical": true, "hint": "Do you have any medical conditions?" },
+    { "dimension": "DH", "subItem": "current medications and compliance", "critical": true, "hint": "What medications do you take? Do you take them regularly?" },
+    { "dimension": "FH", "subItem": "cardiovascular family history", "critical": false, "hint": "Does anyone in your family have heart problems?" },
+    { "dimension": "SH", "subItem": "smoking history", "critical": true, "hint": "Have you ever smoked?" },
+    { "dimension": "SH", "subItem": "exercise and activity level", "critical": false, "hint": "How active are you day to day?" },
+    { "dimension": "ROS", "subItem": "chest pain", "critical": true, "hint": "Do you ever get chest pain?" },
+    { "dimension": "ROS", "subItem": "palpitations", "critical": false, "hint": "Do you ever feel your heart racing?" },
+    { "dimension": "ICE", "subItem": "patient concerns", "critical": false, "hint": "What are you most worried about?" },
+    { "dimension": "COMM", "subItem": "introduction and rapport", "critical": false }
+  ],
+  "personality": "Stoic elderly man, downplays symptoms. Reluctant to admit he forgets medication. Speaks slowly and deliberately.",
+  "speechPatterns": ["[*heavy breathing*]", "[*pauses to catch breath*]", "Well, you know..."]
+}

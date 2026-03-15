@@ -1,0 +1,45 @@
+{
+  "id": "3",
+  "name": "Mr. Wang",
+  "age": 55,
+  "gender": "Male",
+  "initialComplaint": "I've got this terrible cough and I'm bringing up some nasty green phlegm. [*coughs deeply*]",
+  "hiddenDetails": {
+    "duration": "Since last Tuesday, so about 4 days.",
+    "triggers": "Cold air makes the coughing fits much worse.",
+    "pastHistory": "I have COPD and I use an inhaler sometimes.",
+    "associatedSymptoms": "I've been feeling quite feverish and shaky. My chest hurts when I cough.",
+    "lifestyle": "Current smoker, 1 pack a day. Works as a construction supervisor.",
+    "familyHistory": "Not sure about family history. My dad passed away young but I don't know what from.",
+    "drugHistory": "Salbutamol inhaler, use it maybe once a day. Was given antibiotics 6 months ago for a similar episode. No allergies.",
+    "reviewOfSystems": "Fever up to 38.5°C. Some rigors. Decreased appetite. Yellow-green sputum. Pleuritic chest pain on the right side."
+  },
+  "physicalExam": [
+    { "system": "Vital Signs", "finding": "Temperature 38.5°C, Heart Rate 105 bpm, RR 24/min." },
+    { "system": "Respiratory", "finding": "Dullness to percussion at right lower lobe. Bronchial breath sounds and coarse crackles in the same area." },
+    { "system": "General", "finding": "Patient appears acutely ill and is using accessory muscles for breathing." }
+  ],
+  "correctDiagnosis": "Acute Pneumonia on COPD",
+  "difficulty": "hard",
+  "differentials": ["COPD Exacerbation", "Lung Cancer", "Tuberculosis", "Pulmonary Embolism"],
+  "redFlags": ["hemoptysis", "significant weight loss", "night sweats for weeks", "pleuritic chest pain"],
+  "mustAskItems": [
+    { "dimension": "HPC", "subItem": "cough onset and duration", "critical": true, "hint": "When did this cough start?" },
+    { "dimension": "HPC", "subItem": "sputum color and volume", "critical": true, "hint": "What does the phlegm look like?" },
+    { "dimension": "HPC", "subItem": "fever and rigors", "critical": true, "hint": "Have you had any fevers or chills?" },
+    { "dimension": "HPC", "subItem": "chest pain character and location", "critical": true, "hint": "Tell me about the chest pain — where exactly is it?" },
+    { "dimension": "HPC", "subItem": "comparison with previous episodes", "critical": false, "hint": "Have you had anything like this before?" },
+    { "dimension": "PMH", "subItem": "COPD diagnosis and severity", "critical": true, "hint": "Do you have any lung conditions?" },
+    { "dimension": "DH", "subItem": "inhaler use and compliance", "critical": true, "hint": "What inhalers do you use? How often?" },
+    { "dimension": "DH", "subItem": "recent antibiotics", "critical": false, "hint": "Have you had antibiotics recently?" },
+    { "dimension": "SH", "subItem": "smoking pack-years", "critical": true, "hint": "How much do you smoke?" },
+    { "dimension": "SH", "subItem": "occupational exposures", "critical": false, "hint": "What do you do for work?" },
+    { "dimension": "FH", "subItem": "family respiratory history", "critical": false, "hint": "Any lung problems in your family?" },
+    { "dimension": "ROS", "subItem": "weight loss and appetite", "critical": true, "hint": "How has your appetite been? Any weight loss?" },
+    { "dimension": "ROS", "subItem": "hemoptysis", "critical": true, "hint": "Have you coughed up any blood?" },
+    { "dimension": "ICE", "subItem": "patient understanding and concerns", "critical": false, "hint": "What do you think is going on?" },
+    { "dimension": "COMM", "subItem": "introduction and rapport", "critical": false }
+  ],
+  "personality": "Tough working-class man, impatient. Gets irritable if asked too many questions without explanation. Coughs frequently during conversation.",
+  "speechPatterns": ["[*coughs deeply*]", "[*wheezes*]", "[*clears throat with difficulty*]", "Look, doc, I just need something for this cough."]
+}

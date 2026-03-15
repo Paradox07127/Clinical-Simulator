@@ -1,0 +1,5 @@
+{
+  "name": "Clinical Simulator",
+  "description": "A comprehensive clinical simulation platform for CPR training and patient interview practice.",
+  "requestFramePermissions": ["camera", "microphone"]
+}

@@ -1,0 +1,53 @@
+{
+  "dimensions": [
+    {
+      "id": "info_gathering",
+      "name": "Information Gathering",
+      "weight": 0.25,
+      "description": "Completeness and relevance of history taking across all dimensions (HPC, PMH, DH, FH, SH, ROS, ICE)",
+      "scoringMethod": "deterministic"
+    },
+    {
+      "id": "clinical_reasoning",
+      "name": "Clinical Reasoning",
+      "weight": 0.25,
+      "description": "Logical progression, hypothesis-driven questioning, differential diagnosis consideration",
+      "scoringMethod": "llm"
+    },
+    {
+      "id": "diagnostic_accuracy",
+      "name": "Diagnostic Accuracy",
+      "weight": 0.20,
+      "description": "Accuracy of final diagnosis and understanding of the clinical picture",
+      "scoringMethod": "llm"
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "weight": 0.15,
+      "description": "Empathy, rapport building, use of open questions, avoidance of jargon, ICE exploration",
+      "scoringMethod": "llm"
+    },
+    {
+      "id": "efficiency",
+      "name": "Efficiency",
+      "weight": 0.10,
+      "description": "Ratio of information gathered to number of turns; avoidance of redundant questions",
+      "scoringMethod": "deterministic"
+    },
+    {
+      "id": "safety",
+      "name": "Safety",
+      "weight": 0.05,
+      "description": "Recognition of red flags, appropriate urgency, no dangerous omissions",
+      "scoringMethod": "llm"
+    }
+  ],
+  "competencyThresholds": {
+    "novice": 0,
+    "beginner": 30,
+    "competent": 50,
+    "proficient": 70,
+    "expert": 85
+  }
+}
