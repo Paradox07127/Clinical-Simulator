@@ -87,3 +87,4 @@ Requires a modern browser with webcam access for CPR training. AI features requi
 
 ##Links
 飞书：https://my.feishu.cn/docx/R0DrdkDcqoJnxgx6RlxcudOyn3c?from=from_copylink
+web link: https://clinical-simulator-zrwk.onrender.com/
