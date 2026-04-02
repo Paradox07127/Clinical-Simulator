@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface MotionGraphProps {
   data: { time: number; y: number }[];
@@ -21,6 +22,7 @@ export default function MotionGraph({
   compressionCount,
   compact = false,
 }: MotionGraphProps) {
+  const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function MotionGraph({
       ctx.globalAlpha = 0.2;
       ctx.font = '12px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('Awaiting compression data...', width / 2, height / 2);
+      ctx.fillText(t('cpr.awaitingData'), width / 2, height / 2);
       ctx.globalAlpha = 1;
       return;
     }
@@ -116,7 +118,7 @@ export default function MotionGraph({
     ctx.globalAlpha = 0.3;
     ctx.font = '10px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('COMPRESSION MOTION', 8, 16);
+    ctx.fillText(t('cpr.compressionMotion').toUpperCase(), 8, 16);
     ctx.globalAlpha = 1;
 
     // Time axis label (bottom-right)
@@ -124,7 +126,7 @@ export default function MotionGraph({
     ctx.globalAlpha = 0.2;
     ctx.font = '9px monospace';
     ctx.textAlign = 'right';
-    ctx.fillText('5s window', width - 8, height - 8);
+    ctx.fillText(t('cpr.window5s'), width - 8, height - 8);
     ctx.globalAlpha = 1;
 
     // Compression count (top-right)
@@ -136,7 +138,7 @@ export default function MotionGraph({
       ctx.fillText(`#${compressionCount}`, width - 8, 16);
       ctx.globalAlpha = 1;
     }
-  }, [data, peaks, currentRate, compressionCount]);
+  }, [data, peaks, currentRate, compressionCount, t]);
 
   if (compact) {
     return (
@@ -149,7 +151,7 @@ export default function MotionGraph({
   return (
     <div className="bg-white border border-[#141414] rounded-2xl p-4 shadow-[8px_8px_0px_0px_rgba(20,20,20,1)]">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-bold uppercase tracking-widest">Compression Motion</h3>
+        <h3 className="text-xs font-bold uppercase tracking-widest">{t('cpr.compressionMotion')}</h3>
         {currentRate > 0 && (
           <div className="flex items-center gap-2">
             <div
@@ -158,10 +160,10 @@ export default function MotionGraph({
             />
             <span className="text-[9px] font-mono uppercase tracking-wider opacity-50">
               {currentRate >= 100 && currentRate <= 120
-                ? 'On target'
+                ? t('cpr.onTarget')
                 : currentRate < 100
-                  ? 'Too slow'
-                  : 'Too fast'}
+                  ? t('cpr.tooSlow')
+                  : t('cpr.tooFast')}
             </span>
           </div>
         )}

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, ChevronUp, Mic, MicOff, Play, RefreshCw, Square, Volume2, VolumeX, Timer } from 'lucide-react';
 import type { ModuleScreenProps } from '../../../platform/types';
@@ -35,6 +36,7 @@ function formatTime(seconds: number): string {
 }
 
 export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }: ModuleScreenProps) {
+  const { t } = useTranslation();
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | undefined>(undefined);
   const {
     scenario, sessionState, lastDecision, evaluation, feedback,
@@ -65,6 +67,8 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
   const [beginnerMode, setBeginnerMode] = useState(() => localStorage.getItem('beginner_mode') === 'true');
   const [isStartingCamera, setIsStartingCamera] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+  const getDiffLabel = (d: string) => d === 'Beginner' ? t('cpr.beginner') : d === 'Intermediate' ? t('cpr.intermediate') : t('cpr.advanced');
 
   // Derived state
   const trainingMode = scenario.trainingMode ?? 'HANDS_ONLY';
@@ -204,12 +208,12 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
 
         {/* Exit confirm banner */}
         <InlineConfirm
-          message="Training is active. Exit anyway?"
+          message={t('cpr.exitWarning')}
           isVisible={showExitConfirm}
           onConfirm={confirmExit}
           onCancel={() => setShowExitConfirm(false)}
-          confirmLabel="Exit"
-          cancelLabel="Stay"
+          confirmLabel={t('common.exit')}
+          cancelLabel={t('common.stay')}
           variant="danger"
         />
 
@@ -223,7 +227,7 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
             />
 
             <div className="bg-white border border-[#141414] rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(20,20,20,1)]">
-              <div className="text-[10px] font-mono uppercase tracking-widest opacity-50 mb-2">Checklist</div>
+              <div className="text-[10px] font-mono uppercase tracking-widest opacity-50 mb-2">{t('cpr.checklist')}</div>
               <div className="space-y-1">
                 {checklist.map(item => (
                   <div key={item.id} className="flex items-center gap-2 text-[11px]">
@@ -235,12 +239,12 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
             </div>
 
             <div className="space-y-2 rounded-2xl border border-[#141414] bg-white p-4 shadow-[4px_4px_0px_0px_rgba(20,20,20,1)]">
-              <div className="text-[10px] font-mono uppercase tracking-widest opacity-50">Controls</div>
+              <div className="text-[10px] font-mono uppercase tracking-widest opacity-50">{t('cpr.controls')}</div>
               <button
                 onClick={handleStopTraining}
                 className="w-full flex items-center justify-center gap-2 rounded-xl border border-red-500 bg-red-500 px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-white"
               >
-                <Square className="w-3.5 h-3.5" /> Stop Session
+                <Square className="w-3.5 h-3.5" /> {t('cpr.stopSession')}
               </button>
               <div className="grid grid-cols-3 gap-1.5">
                 <button onClick={toggleMetronome} className="flex items-center justify-center gap-1 rounded-lg border border-[#141414]/20 px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider hover:border-[#141414]/50">
@@ -260,7 +264,7 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
                 onClick={() => setShowMotionGraph(prev => !prev)}
                 className="w-full flex items-center justify-between px-4 py-2.5 text-[10px] font-mono uppercase tracking-widest opacity-50 hover:opacity-80"
               >
-                <span>Motion Graph</span>
+                <span>{t('cpr.motionGraph')}</span>
                 {showMotionGraph ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
               </button>
               <AnimatePresence>
@@ -293,19 +297,19 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <p className="text-[10px] font-mono uppercase tracking-widest opacity-50">Scenario</p>
+                  <p className="text-[10px] font-mono uppercase tracking-widest opacity-50">{t('cpr.scenario')}</p>
                   <h2 className="mt-1 text-base font-display font-bold uppercase tracking-tight">{scenario.title}</h2>
                   <p className="mt-1 text-[10px] font-mono uppercase tracking-[0.18em] opacity-45">
-                    {trainingMode === 'CONVENTIONAL_30_2' ? '30:2 Guided' : 'Hands-Only'}
+                    {trainingMode === 'CONVENTIONAL_30_2' ? t('cpr.guided302') : t('cpr.handsOnly')}
                   </p>
                 </div>
                 <div className={`shrink-0 rounded-full ${scenario.difficulty === 'Beginner' ? 'bg-emerald-500' : scenario.difficulty === 'Intermediate' ? 'bg-amber-500' : 'bg-red-500'} px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-white`}>
-                  {scenario.difficulty}
+                  {getDiffLabel(scenario.difficulty)}
                 </div>
               </div>
 
               <div className="space-y-1">
-                <div className="text-[10px] font-mono uppercase tracking-widest opacity-50">Checklist</div>
+                <div className="text-[10px] font-mono uppercase tracking-widest opacity-50">{t('cpr.checklist')}</div>
                 {checklist.map(item => (
                   <div key={item.id} className="flex items-center gap-2 text-[11px]">
                     <span className={item.completed ? 'text-emerald-500' : 'opacity-25'}>●</span>
@@ -320,7 +324,7 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
                   disabled={!isModelLoaded || isStartingCamera}
                   className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#141414] px-4 py-2.5 text-sm font-bold uppercase tracking-widest text-[#E4E3E0] transition-colors disabled:opacity-40"
                 >
-                  <Play className="w-4 h-4" /> {isStartingCamera ? 'Starting Camera...' : 'Start Training'}
+                  <Play className="w-4 h-4" /> {isStartingCamera ? t('cpr.startingCamera') : t('common.startTraining')}
                 </button>
                 {cameraError && (
                   <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs leading-relaxed text-red-700">
@@ -329,10 +333,10 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
                 )}
                 <div className="grid grid-cols-2 gap-2">
                   <button onClick={toggleMetronome} className="flex items-center justify-center gap-1 rounded-xl border border-[#141414] px-3 py-2 text-[10px] font-bold uppercase tracking-widest">
-                    {isMetronomePlaying ? <Volume2 className="w-3 h-3" /> : <VolumeX className="w-3 h-3" />} Beat
+                    {isMetronomePlaying ? <Volume2 className="w-3 h-3" /> : <VolumeX className="w-3 h-3" />} {t('cpr.beat')}
                   </button>
                   <button onClick={toggleVoiceCoach} className="flex items-center justify-center gap-1 rounded-xl border border-[#141414] px-3 py-2 text-[10px] font-bold uppercase tracking-widest">
-                    {isVoiceEnabled ? <Mic className="w-3 h-3" /> : <MicOff className="w-3 h-3" />} Voice
+                    {isVoiceEnabled ? <Mic className="w-3 h-3" /> : <MicOff className="w-3 h-3" />} {t('cpr.voiceLabel')}
                   </button>
                 </div>
               </div>
@@ -377,7 +381,7 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
                 </div>
                 <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg">
                   <span className="text-sm font-mono font-bold">#{compressionCount}</span>
-                  <span className="text-[9px] ml-1 opacity-50">compressions</span>
+                  <span className="text-[9px] ml-1 opacity-50">{t('cpr.compressions')}</span>
                 </div>
                 {lastDecision?.message && (
                   <motion.div
@@ -396,9 +400,9 @@ export default function CprTrainingScreen({ onBack, registerGlobalBackHandler }:
             {!isStreaming && !showCompleted && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 flex flex-col items-center justify-center bg-[#141414]/75 text-white">
                 <HeartPulseIcon className="w-12 h-12 mb-3" />
-                <p className="text-base font-semibold">{isModelLoaded ? 'Pose tracker ready' : 'Loading pose tracker...'}</p>
+                <p className="text-base font-semibold">{isModelLoaded ? t('cpr.poseReady') : t('cpr.poseLoading')}</p>
                 <p className="text-xs opacity-70 mt-1">
-                  {cameraError ? 'Camera did not start. Check the message on the left and try again.' : 'Upper body visibility is enough for CPR feedback.'}
+                  {cameraError ? t('cpr.cameraError') : t('cpr.upperBodyNote')}
                 </p>
               </motion.div>
             )}

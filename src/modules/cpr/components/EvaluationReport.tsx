@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { RefreshCw, TrendingUp, AlertTriangle, ArrowRight, Compass, Play } from 'lucide-react';
 import type { CprEvaluation } from '../types';
@@ -28,20 +29,28 @@ function scoreTextColor(score: number): string {
   return 'text-red-600';
 }
 
-function getScoreConclusion(score: number): string {
-  if (score >= 85) return 'Ready for harder emergency scenarios.';
-  if (score >= 70) return 'Strong session. Tighten the gaps below.';
-  if (score >= 50) return 'Good base. Repeat this scenario once more.';
-  return 'Review the CPR technique fundamentals before retrying.';
-}
-
 export default function EvaluationReport({
   evaluation,
   feedback,
   onNewSession,
   onRetrySession,
 }: EvaluationReportProps) {
+  const { t } = useTranslation();
+
+  function getScoreConclusion(score: number): string {
+    if (score >= 85) return t('cpr.readyHarder');
+    if (score >= 70) return t('cpr.strongSession');
+    if (score >= 50) return t('cpr.goodBase');
+    return t('cpr.reviewFundamentals');
+  }
+
   const scoreConclusion = getScoreConclusion(evaluation.totalScore);
+
+  const dimLabels: Record<string, string> = {
+    rhythm: t('cpr.rhythm'), form: t('cpr.form'), readiness: t('cpr.readiness'),
+    depthProxy: t('cpr.compressionDepth'), recoil: t('cpr.chestRecoil'),
+    compressionFraction: t('cpr.compressionFraction'), rateConsistency: t('cpr.rateConsistency'),
+  };
 
   const dimensions: DimensionDef[] = [
     { key: 'rhythm', label: 'Rhythm', score: evaluation.breakdown.rhythm },
@@ -70,8 +79,8 @@ export default function EvaluationReport({
       <div className="grid gap-6 rounded-2xl bg-[#141414] p-8 text-[#E4E3E0] shadow-[8px_8px_0px_0px_rgba(20,20,20,1)] lg:grid-cols-[minmax(0,1.4fr)_280px]">
         <div className="space-y-4">
           <div className="space-y-2">
-            <p className="text-[10px] font-mono uppercase tracking-widest text-[#E4E3E0]/45">After-Action Review</p>
-            <h2 className="text-3xl lg:text-4xl font-display font-bold uppercase tracking-tight">CPR Review</h2>
+            <p className="text-[10px] font-mono uppercase tracking-widest text-[#E4E3E0]/45">{t('cpr.afterAction')}</p>
+            <h2 className="text-3xl lg:text-4xl font-display font-bold uppercase tracking-tight">{t('cpr.cprReview')}</h2>
             <p className="text-base leading-relaxed text-[#E4E3E0]/82">{scoreConclusion}</p>
           </div>
 
@@ -83,7 +92,7 @@ export default function EvaluationReport({
         </div>
 
         <div className="flex flex-col justify-center rounded-2xl bg-[#E4E3E0] p-6 text-center text-[#141414]">
-          <p className="text-[10px] font-mono uppercase tracking-widest opacity-45">Overall Score</p>
+          <p className="text-[10px] font-mono uppercase tracking-widest opacity-45">{t('common.overallScore')}</p>
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -92,14 +101,14 @@ export default function EvaluationReport({
           >
             {evaluation.totalScore}
           </motion.div>
-          <p className="mt-3 text-xs font-bold uppercase tracking-widest opacity-65">Session Summary</p>
+          <p className="mt-3 text-xs font-bold uppercase tracking-widest opacity-65">{t('common.sessionSummary')}</p>
         </div>
       </div>
 
       <div className="rounded-2xl border border-[#141414] bg-white p-6 shadow-[8px_8px_0px_0px_rgba(20,20,20,1)]">
         <div className="mb-4">
-          <div className="text-[10px] font-mono uppercase tracking-widest opacity-50">Performance Breakdown</div>
-          <h3 className="mt-2 text-xl font-display font-bold uppercase tracking-tight">Score Breakdown</h3>
+          <div className="text-[10px] font-mono uppercase tracking-widest opacity-50">{t('cpr.performanceBreakdown')}</div>
+          <h3 className="mt-2 text-xl font-display font-bold uppercase tracking-tight">{t('cpr.scoreBreakdown')}</h3>
         </div>
         <div className="grid gap-x-8 gap-y-3 lg:grid-cols-2">
           {dimensions.map((dim, i) => (
@@ -111,7 +120,7 @@ export default function EvaluationReport({
               className="space-y-1"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold">{dim.label}</span>
+                <span className="text-xs font-semibold">{dimLabels[dim.key] || dim.label}</span>
                 <span className={`text-xs font-bold ${scoreTextColor(dim.score)}`}>
                   {dim.score}%
                 </span>
@@ -137,7 +146,7 @@ export default function EvaluationReport({
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-[#0d9488]" />
               <span className="text-[10px] font-mono uppercase tracking-widest opacity-50">
-                What Went Well
+                {t('cpr.whatWentWell')}
               </span>
             </div>
             {evaluation.strengths.map((s, i) => (
@@ -156,7 +165,7 @@ export default function EvaluationReport({
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-amber-600" />
                 <span className="text-[10px] font-mono uppercase tracking-widest opacity-50">
-                  Next Fixes
+                  {t('cpr.nextFixes')}
                 </span>
               </div>
               {evaluation.gaps.map((g, i) => (
@@ -177,7 +186,7 @@ export default function EvaluationReport({
           <div className="flex items-center gap-2">
             <ArrowRight className="h-4 w-4" />
             <span className="text-[10px] font-mono uppercase tracking-widest opacity-50">
-              Coach Notes
+              {t('cpr.coachNotes')}
             </span>
           </div>
           {evaluation.nextSteps.map((ns, i) => (
@@ -193,7 +202,7 @@ export default function EvaluationReport({
         <div className="flex items-center gap-2 mb-2">
           <Compass className="w-5 h-5" />
           <span className="text-[10px] font-mono uppercase tracking-widest opacity-50">
-            What to Do Next
+            {t('cpr.whatToDoNext')}
           </span>
         </div>
 
@@ -208,7 +217,7 @@ export default function EvaluationReport({
               className="flex items-center justify-center gap-2 border border-[#141414] px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-[#141414]/5 transition-all"
             >
               <RefreshCw className="w-4 h-4" />
-              Retry
+              {t('common.retry')}
             </button>
           )}
           <button
@@ -216,7 +225,7 @@ export default function EvaluationReport({
             className="flex items-center justify-center gap-2 bg-[#141414] text-[#E4E3E0] px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-[#141414]/90 transition-all shadow-[8px_8px_0px_0px_rgba(20,20,20,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(20,20,20,1)]"
           >
             <Play className="w-4 h-4" />
-            New Scenario
+            {t('cpr.newScenario')}
           </button>
         </div>
       </div>

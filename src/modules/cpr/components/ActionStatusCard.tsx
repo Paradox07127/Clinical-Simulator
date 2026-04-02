@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { CheckCircle2, AlertTriangle, XCircle, Heart } from 'lucide-react';
 import type { CprDecision, CprSessionState } from '../types';
@@ -20,13 +21,6 @@ function deriveOverallStatus(
   if (formStatus === 'HANDS_HIDDEN' || rhythmStatus === 'FAST') return 'BAD';
   return 'WARNING';
 }
-
-const STATUS_CONFIG: Record<OverallStatus, { icon: typeof CheckCircle2; iconColor: string; pill: string; label: string }> = {
-  GOOD: { icon: CheckCircle2, iconColor: 'text-[#0d9488]', pill: 'border-[#0d9488]/20 bg-[#0d9488]/10 text-[#0d9488]', label: 'On Target' },
-  WARNING: { icon: AlertTriangle, iconColor: 'text-amber-600', pill: 'border-amber-500/20 bg-amber-500/10 text-amber-700', label: 'Adjust Form' },
-  BAD: { icon: XCircle, iconColor: 'text-red-500', pill: 'border-red-500/20 bg-red-500/10 text-red-600', label: 'Fix Required' },
-  IDLE: { icon: Heart, iconColor: 'text-[#141414]/30', pill: 'border-[#141414]/10 bg-[#141414]/[0.04] text-[#141414]/55', label: 'Waiting' },
-};
 
 const RHYTHM_COLOR: Record<string, string> = {
   GOOD: 'text-emerald-600',
@@ -54,8 +48,17 @@ function CheckRow({ label, ok, detail }: { label: string; ok: boolean | null; de
 }
 
 export default function ActionStatusCard({ sessionState, decision, compressionCount }: ActionStatusCardProps) {
+  const { t } = useTranslation();
+
+  const statusConfig: Record<OverallStatus, { icon: typeof CheckCircle2; iconColor: string; pill: string; label: string }> = {
+    GOOD: { icon: CheckCircle2, iconColor: 'text-[#0d9488]', pill: 'border-[#0d9488]/20 bg-[#0d9488]/10 text-[#0d9488]', label: t('cpr.onTarget') },
+    WARNING: { icon: AlertTriangle, iconColor: 'text-amber-600', pill: 'border-amber-500/20 bg-amber-500/10 text-amber-700', label: t('cpr.adjustForm') },
+    BAD: { icon: XCircle, iconColor: 'text-red-500', pill: 'border-red-500/20 bg-red-500/10 text-red-600', label: t('cpr.fixRequired') },
+    IDLE: { icon: Heart, iconColor: 'text-[#141414]/30', pill: 'border-[#141414]/10 bg-[#141414]/[0.04] text-[#141414]/55', label: t('cpr.waiting') },
+  };
+
   const overall = deriveOverallStatus(decision, sessionState);
-  const config = STATUS_CONFIG[overall];
+  const config = statusConfig[overall];
   const StatusIcon = config.icon;
 
   const currentRate = sessionState?.currentRate ?? 0;
@@ -77,7 +80,7 @@ export default function ActionStatusCard({ sessionState, decision, compressionCo
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <StatusIcon className={`w-5 h-5 ${config.iconColor}`} />
-          <span className="text-[10px] font-mono uppercase tracking-widest opacity-50">Live Feedback</span>
+          <span className="text-[10px] font-mono uppercase tracking-widest opacity-50">{t('cpr.liveFeedback')}</span>
         </div>
         <div className="flex items-center gap-2">
           {compressionCount > 0 && (
@@ -100,7 +103,7 @@ export default function ActionStatusCard({ sessionState, decision, compressionCo
           {currentRate || '—'}
         </motion.div>
         <div className="text-[10px] font-mono uppercase tracking-widest opacity-50 mt-1">
-          CPM {currentRate > 0 && (currentRate >= 100 && currentRate <= 120 ? '· On Target' : currentRate < 100 ? '· Too Slow' : '· Too Fast')}
+          CPM {currentRate > 0 && (currentRate >= 100 && currentRate <= 120 ? `· ${t('cpr.onTarget')}` : currentRate < 100 ? `· ${t('cpr.tooSlow')}` : `· ${t('cpr.tooFast')}`)}
         </div>
       </div>
 
@@ -121,11 +124,11 @@ export default function ActionStatusCard({ sessionState, decision, compressionCo
 
       {/* Form checks */}
       <div className="space-y-1.5">
-        <div className="text-[10px] font-mono uppercase tracking-widest opacity-50">Form Check</div>
-        <CheckRow label="Hands Visible" ok={visibleOk} detail={hasData ? `${Math.round((sessionState?.visibleRatio ?? 0) * 100)}%` : undefined} />
-        <CheckRow label="Arms Straight" ok={armsOk} detail={hasData ? `${Math.round((sessionState?.straightArmRatio ?? 0) * 100)}%` : undefined} />
-        <CheckRow label="Hands Centered" ok={handsOk} detail={hasData ? `${Math.round((sessionState?.centeredRatio ?? 0) * 100)}%` : undefined} />
-        <CheckRow label="Full Recoil" ok={recoilOk} detail={hasData ? `${Math.round((sessionState?.recoilRatio ?? 0) * 100)}%` : undefined} />
+        <div className="text-[10px] font-mono uppercase tracking-widest opacity-50">{t('cpr.formCheck')}</div>
+        <CheckRow label={t('cpr.handsVisible')} ok={visibleOk} detail={hasData ? `${Math.round((sessionState?.visibleRatio ?? 0) * 100)}%` : undefined} />
+        <CheckRow label={t('cpr.armsStraight')} ok={armsOk} detail={hasData ? `${Math.round((sessionState?.straightArmRatio ?? 0) * 100)}%` : undefined} />
+        <CheckRow label={t('cpr.handsCentered')} ok={handsOk} detail={hasData ? `${Math.round((sessionState?.centeredRatio ?? 0) * 100)}%` : undefined} />
+        <CheckRow label={t('cpr.fullRecoil')} ok={recoilOk} detail={hasData ? `${Math.round((sessionState?.recoilRatio ?? 0) * 100)}%` : undefined} />
       </div>
 
       {/* Stats row */}
@@ -135,15 +138,15 @@ export default function ActionStatusCard({ sessionState, decision, compressionCo
           <div className="grid grid-cols-3 gap-1 text-center">
             <div>
               <div className="text-sm font-bold">{sessionState?.averageRate ?? 0}</div>
-              <div className="text-[8px] font-mono uppercase opacity-35">Avg</div>
+              <div className="text-[8px] font-mono uppercase opacity-35">{t('cpr.avg')}</div>
             </div>
             <div>
               <div className="text-sm font-bold">{Math.round((sessionState?.compressionFraction ?? 0) * 100)}%</div>
-              <div className="text-[8px] font-mono uppercase opacity-35">CF</div>
+              <div className="text-[8px] font-mono uppercase opacity-35">{t('cpr.cf')}</div>
             </div>
             <div>
               <div className="text-sm font-bold">{sessionState?.rateConsistency ?? 0}</div>
-              <div className="text-[8px] font-mono uppercase opacity-35">Consist.</div>
+              <div className="text-[8px] font-mono uppercase opacity-35">{t('cpr.consist')}</div>
             </div>
           </div>
         </>

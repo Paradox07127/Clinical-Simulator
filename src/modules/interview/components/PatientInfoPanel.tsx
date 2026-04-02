@@ -1,6 +1,7 @@
 import React from 'react';
 import { User, AlertCircle, ClipboardCheck, RefreshCw, ChevronDown, ChevronUp, BarChart3 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { InterviewStatus } from '../types';
 import type { PatientCase, SessionState, MustAskItem } from '../types';
 
@@ -40,6 +41,7 @@ export default function PatientInfoPanel({
   warningMessage,
   onDismissWarning,
 }: PatientInfoPanelProps) {
+  const { t } = useTranslation();
   const [isSupportOpen, setIsSupportOpen] = React.useState(false);
   const isInterviewing = status === InterviewStatus.INTERVIEWING;
 
@@ -65,18 +67,18 @@ export default function PatientInfoPanel({
       {/* Scrollable body */}
       <div className="flex-1 overflow-y-auto p-5 space-y-4 min-h-0">
         <div className="space-y-1">
-          <span className="text-[10px] font-mono opacity-50 uppercase">Chief Complaint</span>
+          <span className="text-[10px] font-mono opacity-50 uppercase">{t('interview.chiefComplaint')}</span>
           <p className="text-sm leading-relaxed italic">"{currentCase.initialComplaint}"</p>
         </div>
 
         {isInterviewing && sessionState && (
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-xl border border-[#141414]/10 bg-[#141414]/[0.02] px-3 py-2.5">
-              <p className="text-[9px] font-mono uppercase tracking-[0.16em] opacity-45">Coverage</p>
+              <p className="text-[9px] font-mono uppercase tracking-[0.16em] opacity-45">{t('interview.coverage')}</p>
               <p className="mt-0.5 text-lg font-bold">{Math.round(sessionState.overallCoverage)}%</p>
             </div>
             <div className="rounded-xl border border-[#141414]/10 bg-[#141414]/[0.02] px-3 py-2.5">
-              <p className="text-[9px] font-mono uppercase tracking-[0.16em] opacity-45">Turns</p>
+              <p className="text-[9px] font-mono uppercase tracking-[0.16em] opacity-45">{t('interview.turns')}</p>
               <p className="mt-0.5 text-lg font-bold">{sessionState.turnCount}</p>
             </div>
           </div>
@@ -90,7 +92,7 @@ export default function PatientInfoPanel({
             >
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-[#0d9488]" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#0d9488]">Clinical Support Tools</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#0d9488]">{t('interview.clinicalSupport')}</span>
               </div>
               {isSupportOpen ? <ChevronUp className="w-4 h-4 text-[#0d9488]" /> : <ChevronDown className="w-4 h-4 text-[#0d9488]" />}
             </button>
@@ -109,14 +111,14 @@ export default function PatientInfoPanel({
                       onClick={onToggleDiagnosis}
                       className={`w-full flex items-center justify-between p-2.5 text-[10px] font-bold uppercase tracking-wider border border-[#141414] rounded-xl transition-all ${showDiagnosis ? 'bg-[#141414] text-[#E4E3E0]' : 'hover:bg-[#141414]/5'}`}
                     >
-                      <span>{showDiagnosis ? 'Hide Diagnosis' : 'Reveal Diagnosis (Cheat)'}</span>
+                      <span>{showDiagnosis ? t('interview.hideDiagnosis') : t('interview.revealDiagnosis')}</span>
                       <AlertCircle className="w-3 h-3" />
                     </button>
                     <AnimatePresence>
                       {showDiagnosis && (
                         <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                           <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-[10px] text-amber-900 font-medium">
-                            Correct Diagnosis: <span className="font-bold">{currentCase.correctDiagnosis}</span>
+                            {t('interview.correctDiagnosis')}: <span className="font-bold">{currentCase.correctDiagnosis}</span>
                           </div>
                         </motion.div>
                       )}
@@ -127,7 +129,7 @@ export default function PatientInfoPanel({
                       onClick={onToggleTips}
                       className={`w-full flex items-center justify-between p-2.5 text-[10px] font-bold uppercase tracking-wider border border-[#141414] rounded-xl transition-all ${showTips ? 'bg-[#141414] text-[#E4E3E0]' : 'hover:bg-[#141414]/5'}`}
                     >
-                      <span>Interviewing Tips</span>
+                      <span>{t('interview.interviewingTips')}</span>
                       <ClipboardCheck className="w-3 h-3" />
                     </button>
                     <AnimatePresence>
@@ -135,19 +137,19 @@ export default function PatientInfoPanel({
                         <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                           <div className="p-3 bg-[#0d9488]/5 border border-[#0d9488]/20 rounded-xl space-y-2">
                             <div className="space-y-1">
-                              <p className="text-[9px] font-bold uppercase text-[#0d9488]">History of Presenting Complaint</p>
+                              <p className="text-[9px] font-bold uppercase text-[#0d9488]">{t('interview.hpc')}</p>
                               <ul className="text-[9px] text-[#0d9488]/80 space-y-0.5 list-disc pl-3">
-                                <li><strong>Onset:</strong> When did it start?</li>
-                                <li><strong>Triggers:</strong> What makes it worse?</li>
-                                <li><strong>Relief:</strong> What makes it better?</li>
-                                <li><strong>Associated:</strong> Any other symptoms?</li>
+                                <li><strong>{t('interview.onset')}:</strong> {t('interview.onsetQ')}</li>
+                                <li><strong>{t('interview.triggers')}:</strong> {t('interview.triggersQ')}</li>
+                                <li><strong>{t('interview.relief')}:</strong> {t('interview.reliefQ')}</li>
+                                <li><strong>{t('interview.associated')}:</strong> {t('interview.associatedQ')}</li>
                               </ul>
                             </div>
                             <div className="space-y-1">
-                              <p className="text-[9px] font-bold uppercase text-[#0d9488]">Background History</p>
+                              <p className="text-[9px] font-bold uppercase text-[#0d9488]">{t('interview.backgroundHistory')}</p>
                               <ul className="text-[9px] text-[#0d9488]/80 space-y-0.5 list-disc pl-3">
-                                <li><strong>Medical:</strong> Any other health conditions?</li>
-                                <li><strong>Social:</strong> Do you smoke? Any pets?</li>
+                                <li><strong>{t('interview.medical')}:</strong> {t('interview.medicalQ')}</li>
+                                <li><strong>{t('interview.social')}:</strong> {t('interview.socialQ')}</li>
                               </ul>
                             </div>
                           </div>
@@ -160,7 +162,7 @@ export default function PatientInfoPanel({
                       <div className="p-2.5 bg-red-50 border border-red-200 rounded-xl space-y-1.5">
                         <div className="flex items-center gap-2">
                           <AlertCircle className="w-3 h-3 text-red-500" />
-                          <span className="text-[9px] font-bold uppercase text-red-700">Critical Gaps</span>
+                          <span className="text-[9px] font-bold uppercase text-red-700">{t('interview.criticalGaps')}</span>
                         </div>
                         <ul className="space-y-0.5">
                           {criticalGaps.slice(0, 3).map((gap, i) => (
@@ -170,7 +172,7 @@ export default function PatientInfoPanel({
                             </li>
                           ))}
                           {criticalGaps.length > 3 && (
-                            <li className="text-[9px] text-red-600 italic pl-3">+{criticalGaps.length - 3} more...</li>
+                            <li className="text-[9px] text-red-600 italic pl-3">{t('interview.more', { count: criticalGaps.length - 3 })}</li>
                           )}
                         </ul>
                       </div>
@@ -187,11 +189,11 @@ export default function PatientInfoPanel({
       {isInterviewing && (
         <div className="shrink-0 border-t border-[#141414]/10 p-4 space-y-3 bg-white">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-mono opacity-50 uppercase">Final Diagnosis</label>
+            <label className="text-[10px] font-mono opacity-50 uppercase">{t('interview.finalDiagnosis')}</label>
             <textarea
               value={diagnosis}
               onChange={(e) => onDiagnosisChange(e.target.value)}
-              placeholder="Enter diagnosis and reasoning..."
+              placeholder={t('interview.diagnosisPlaceholder')}
               className="w-full h-20 p-3 border border-[#141414] rounded-xl text-sm focus:outline-none focus:ring-2 ring-[#0d9488]/20 resize-none"
             />
           </div>
@@ -220,7 +222,7 @@ export default function PatientInfoPanel({
 
           {beginnerMode && sessionState && sessionState.overallCoverage < 40 ? (
             <div className="w-full py-2.5 rounded-xl border border-amber-300 bg-amber-50 text-center text-[10px] font-bold uppercase tracking-widest text-amber-700">
-              Reach 40% coverage to submit ({Math.round(sessionState.overallCoverage)}%)
+              {t('interview.reachCoverage', { value: Math.round(sessionState.overallCoverage) })}
             </div>
           ) : (
             <button
@@ -229,7 +231,7 @@ export default function PatientInfoPanel({
               className="w-full bg-[#0d9488] text-[#E4E3E0] py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-[#0d9488]/90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 text-sm"
             >
               {isLoading ? <RefreshCw className="animate-spin w-4 h-4" /> : <ClipboardCheck className="w-4 h-4" />}
-              Submit Diagnosis
+              {t('interview.submitDiagnosis')}
             </button>
           )}
         </div>

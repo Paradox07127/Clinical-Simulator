@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MessageSquare, ChevronRight, Heart, Clock, Zap, Play, Stethoscope, Activity, FileText } from 'lucide-react';
 import { motion } from 'motion/react';
 import type { TrainingModuleDefinition } from '../platform/types';
@@ -15,43 +16,6 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Heart,
 };
 
-const MODULE_META: Record<string, { time: string; input: string; outcome: string }> = {
-  INTERVIEW: { time: '5-8 min', input: 'Voice + Text', outcome: 'Score + Coach' },
-  CPR: { time: '3-5 min', input: 'Camera + Audio', outcome: 'Score + Coach' },
-};
-
-const PREVIEW_PROJECTS = [
-  {
-    id: 'AED_TRAINING',
-    title: 'AED Training',
-    description: 'Learn to operate an automated external defibrillator: pad placement, rhythm analysis, shock delivery, and integration with CPR cycles.',
-    icon: Activity,
-    accent: 'bg-amber-500',
-    time: '4-6 min',
-    input: 'Camera + Voice',
-    outcome: 'Protocol Accuracy',
-  },
-  {
-    id: 'FIRST_AID',
-    title: 'First Aid Training',
-    description: 'Practice wound assessment, bleeding control, bandaging techniques, choking response, and recovery position with step-by-step AI guidance.',
-    icon: Stethoscope,
-    accent: 'bg-red-500',
-    time: '5-8 min',
-    input: 'Voice + Checklist',
-    outcome: 'Skill Competency',
-  },
-  {
-    id: 'TRAUMA_RESPONSE',
-    title: 'Trauma Response Training',
-    description: 'Simulate multi-casualty triage, primary survey (ABCDE), hemorrhage control, and spinal immobilization under time-critical scenarios.',
-    icon: FileText,
-    accent: 'bg-[#0d9488]',
-    time: '6-10 min',
-    input: 'Voice + Decision Cards',
-    outcome: 'Triage Accuracy',
-  },
-] as const;
 
 function SectionHeader({
   eyebrow,
@@ -83,22 +47,49 @@ function SectionHeader({
   );
 }
 
-function formatDate(ts: number): string {
-  const d = new Date(ts);
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours}h ago`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return d.toLocaleDateString();
-}
-
 export default function ModuleSelector({ modules, onSelectModule, onGuidedStart }: ModuleSelectorProps) {
+  const { t } = useTranslation();
   const [recentSessions, setRecentSessions] = useState<SessionSummary[]>([]);
+
+  const moduleMeta = useMemo(() => ({
+    INTERVIEW: { time: t('modules.interview.time'), input: t('modules.interview.input'), outcome: t('modules.interview.outcome') },
+    CPR: { time: t('modules.cpr.time'), input: t('modules.cpr.input'), outcome: t('modules.cpr.outcome') },
+  }), [t]);
+
+  const previewProjects = useMemo(() => [
+    {
+      id: 'AED_TRAINING', title: t('preview.aed.title'), description: t('preview.aed.description'),
+      icon: Activity, accent: 'bg-amber-500',
+      time: t('preview.aed.time'), input: t('preview.aed.input'), outcome: t('preview.aed.outcome'),
+    },
+    {
+      id: 'FIRST_AID', title: t('preview.firstAid.title'), description: t('preview.firstAid.description'),
+      icon: Stethoscope, accent: 'bg-red-500',
+      time: t('preview.firstAid.time'), input: t('preview.firstAid.input'), outcome: t('preview.firstAid.outcome'),
+    },
+    {
+      id: 'TRAUMA_RESPONSE', title: t('preview.trauma.title'), description: t('preview.trauma.description'),
+      icon: FileText, accent: 'bg-[#0d9488]',
+      time: t('preview.trauma.time'), input: t('preview.trauma.input'), outcome: t('preview.trauma.outcome'),
+    },
+  ], [t]);
+
+  function formatDate(ts: number): string {
+    const d = new Date(ts);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 1) return t('moduleSelector.justNow');
+    if (diffMins < 60) return t('moduleSelector.mAgo', { count: diffMins });
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return t('moduleSelector.hAgo', { count: diffHours });
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) return t('moduleSelector.dAgo', { count: diffDays });
+    return d.toLocaleDateString();
+  }
+
+  const getModTitle = (id: string, fallback: string) => id === 'INTERVIEW' ? t('modules.interview.title') : id === 'CPR' ? t('modules.cpr.title') : fallback;
+  const getModDesc = (id: string, fallback: string) => id === 'INTERVIEW' ? t('modules.interview.description') : id === 'CPR' ? t('modules.cpr.description') : fallback;
 
   useEffect(() => {
     setRecentSessions(getRecentSessions(3));
@@ -113,13 +104,13 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
         transition={{ duration: 0.5 }}
         className="mx-auto w-full max-w-4xl space-y-4 text-center lg:space-y-5"
       >
-        <p className="text-[10px] font-mono uppercase tracking-[0.26em] opacity-45">AI Clinical Training Platform</p>
+        <p className="text-[10px] font-mono uppercase tracking-[0.26em] opacity-45">{t('moduleSelector.eyebrow')}</p>
         <h2 className="text-4xl font-bold tracking-tight leading-[0.95] text-[#141414] sm:text-5xl lg:text-6xl font-display">
-          Train like a clinician.<br />
-          Practice with AI patients and real-time feedback.
+          {t('moduleSelector.heading1')}<br />
+          {t('moduleSelector.heading2')}
         </h2>
         <p className="mx-auto max-w-3xl text-base text-[#141414]/80 font-medium lg:text-lg">
-          Select a training module to begin your professional medical simulation session.
+          {t('moduleSelector.description')}
         </p>
 
         {/* CTAs */}
@@ -129,7 +120,7 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
               onClick={onGuidedStart}
               className="bg-[#141414] text-[#E4E3E0] px-8 py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-[#141414]/90 transition-all shadow-[8px_8px_0px_0px_rgba(20,20,20,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(20,20,20,1)]"
             >
-              Start Guided Setup
+              {t('moduleSelector.startGuided')}
             </button>
           </div>
         )}
@@ -137,8 +128,8 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
 
       <section className="w-full max-w-6xl space-y-5">
         <SectionHeader
-          eyebrow="Interactive Now"
-          title="Live Training Modules"
+          eyebrow={t('moduleSelector.interactiveNow')}
+          title={t('moduleSelector.liveModules')}
           align="stacked"
         />
 
@@ -146,7 +137,7 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
         <div id="module-cards" className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           {modules.map((mod, idx) => {
             const IconComp = ICON_MAP[mod.icon] || MessageSquare;
-            const meta = MODULE_META[mod.id] || { time: '~5 min', input: 'Mixed', outcome: 'Score + Coach' };
+            const meta = (moduleMeta as Record<string, { time: string; input: string; outcome: string }>)[mod.id] || { time: '~5 min', input: 'Mixed', outcome: 'Score + Coach' };
             return (
               <motion.button
                 key={mod.id}
@@ -166,21 +157,21 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
                   }`} />
                 </div>
                 <div className="space-y-3">
-                  <h3 className="text-xl font-bold uppercase tracking-tight font-display">{mod.title}</h3>
-                  <p className="max-w-md text-sm leading-relaxed opacity-65">{mod.description}</p>
+                  <h3 className="text-xl font-bold uppercase tracking-tight font-display">{getModTitle(mod.id, mod.title)}</h3>
+                  <p className="max-w-md text-sm leading-relaxed opacity-65">{getModDesc(mod.id, mod.description)}</p>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 pt-4 border-t border-[#141414]/10 mt-auto">
                   <div>
-                    <span className="text-[9px] font-mono uppercase opacity-40">Time</span>
+                    <span className="text-[9px] font-mono uppercase opacity-40">{t('common.time')}</span>
                     <p className="text-xs font-bold">{meta.time}</p>
                   </div>
                   <div>
-                    <span className="text-[9px] font-mono uppercase opacity-40">Input</span>
+                    <span className="text-[9px] font-mono uppercase opacity-40">{t('common.input')}</span>
                     <p className="text-xs font-bold">{meta.input}</p>
                   </div>
                   <div>
-                    <span className="text-[9px] font-mono uppercase opacity-40">Outcome</span>
+                    <span className="text-[9px] font-mono uppercase opacity-40">{t('common.outcome')}</span>
                     <p className="text-xs font-bold">{meta.outcome}</p>
                   </div>
                 </div>
@@ -188,7 +179,7 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
                 <div className={`flex items-center gap-2 text-xs font-bold uppercase tracking-widest ${
                   mod.color === 'emerald' ? 'text-[#0d9488]' : ''
                 }`}>
-                  Start Training <ChevronRight className="w-4 h-4" />
+                  {t('common.startTraining')} <ChevronRight className="w-4 h-4" />
                 </div>
               </motion.button>
             );
@@ -203,13 +194,13 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
         className="w-full max-w-6xl space-y-5"
       >
         <SectionHeader
-          eyebrow="Platform Roadmap"
-          title="Preview Training Tracks"
+          eyebrow={t('moduleSelector.platformRoadmap')}
+          title={t('moduleSelector.previewTracks')}
           align="stacked"
         />
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {PREVIEW_PROJECTS.map((project, idx) => {
+          {previewProjects.map((project, idx) => {
             const IconComp = project.icon;
             return (
               <motion.div
@@ -224,7 +215,7 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
                     <IconComp className="h-5 w-5 text-white" />
                   </div>
                   <span className="px-3 py-1 rounded-full border border-[#141414]/15 text-[10px] font-bold uppercase tracking-[0.18em] text-[#141414]/60">
-                    Preview Only
+                    {t('common.previewOnly')}
                   </span>
                 </div>
 
@@ -235,15 +226,15 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
 
                 <div className="grid grid-cols-3 gap-2 pt-4 border-t border-[#141414]/10">
                   <div>
-                    <span className="text-[9px] font-mono uppercase text-[#141414]/40">Time</span>
+                    <span className="text-[9px] font-mono uppercase text-[#141414]/40">{t('common.time')}</span>
                     <p className="text-xs font-bold mt-1">{project.time}</p>
                   </div>
                   <div>
-                    <span className="text-[9px] font-mono uppercase text-[#141414]/40">Input</span>
+                    <span className="text-[9px] font-mono uppercase text-[#141414]/40">{t('common.input')}</span>
                     <p className="text-xs font-bold mt-1">{project.input}</p>
                   </div>
                   <div>
-                    <span className="text-[9px] font-mono uppercase text-[#141414]/40">Outcome</span>
+                    <span className="text-[9px] font-mono uppercase text-[#141414]/40">{t('common.outcome')}</span>
                     <p className="text-xs font-bold mt-1">{project.outcome}</p>
                   </div>
                 </div>
@@ -264,8 +255,8 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
         <div className="rounded-2xl border border-[#141414] bg-white p-6 shadow-[6px_6px_0px_0px_rgba(20,20,20,0.14)]">
           <div className="space-y-4">
             <SectionHeader
-              eyebrow="Recent Training"
-              title="Session History"
+              eyebrow={t('moduleSelector.recentTraining')}
+              title={t('moduleSelector.sessionHistory')}
               align="stacked"
             />
           </div>
@@ -290,7 +281,7 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-bold truncate leading-tight">{s.caseOrScenarioName}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[9px] font-mono uppercase opacity-45">{s.module === 'INTERVIEW' ? 'Interview' : 'CPR'}</span>
+                        <span className="text-[9px] font-mono uppercase opacity-45">{s.module === 'INTERVIEW' ? t('modules.interview.title') : t('modules.cpr.title')}</span>
                         <span className="text-[9px] font-mono opacity-35">{formatDate(s.timestamp)}</span>
                       </div>
                     </div>
@@ -306,8 +297,8 @@ export default function ModuleSelector({ modules, onSelectModule, onGuidedStart 
                   <Clock className="w-4 h-4 opacity-30" />
                   <Zap className="w-4 h-4 opacity-30" />
                 </div>
-                <p className="text-sm opacity-50 font-medium">No previous sessions</p>
-                <p className="text-xs opacity-30 mt-1">Complete a training module to see your history here.</p>
+                <p className="text-sm opacity-50 font-medium">{t('moduleSelector.noPreviousSessions')}</p>
+                <p className="text-xs opacity-30 mt-1">{t('moduleSelector.completeToSee')}</p>
               </div>
             )}
           </div>

@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { Heart, Camera, Cpu, Activity, ShieldCheck } from 'lucide-react';
 
 export default function CprLoadingScreen() {
+  const { t } = useTranslation();
   const [step, setStep] = useState(0);
   const steps = [
-    { icon: <Cpu className="w-3 h-3" />, text: 'Loading Pose Model' },
-    { icon: <Camera className="w-3 h-3" />, text: 'Requesting Camera Access' },
-    { icon: <Activity className="w-3 h-3" />, text: 'Calibrating Detection' },
-    { icon: <Heart className="w-3 h-3" />, text: 'Preparing Scenario' },
+    { icon: <Cpu className="w-3 h-3" />, text: t('cpr.loadingPoseModel') },
+    { icon: <Camera className="w-3 h-3" />, text: t('cpr.requestingCamera') },
+    { icon: <Activity className="w-3 h-3" />, text: t('cpr.calibrating') },
+    { icon: <Heart className="w-3 h-3" />, text: t('cpr.preparingScenario') },
   ];
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function CprLoadingScreen() {
         <div className="flex items-center gap-2">
           <Heart className="w-4 h-4 text-[#E4E3E0] animate-pulse" />
           <span className="text-[10px] font-mono text-[#E4E3E0] uppercase tracking-widest font-bold">
-            Preparing Training
+            {t('cpr.preparingTraining')}
           </span>
         </div>
         <div className="flex gap-1">
@@ -75,7 +77,7 @@ export default function CprLoadingScreen() {
             <div className="space-y-2">
               <div className="flex justify-between items-end px-1">
                 <span className="text-[9px] font-mono text-[#141414]/40 uppercase tracking-widest">
-                  Setup Progress
+                  {t('cpr.setupProgress')}
                 </span>
                 <span className="text-[10px] font-mono text-[#141414] font-bold">
                   {Math.round(((step + 1) / steps.length) * 100)}%
@@ -133,12 +135,12 @@ export default function CprLoadingScreen() {
       {/* Footer */}
       <div className="bg-white/50 border-t border-[#141414]/10 p-3 flex justify-between items-center">
         <div className="text-[7px] font-mono text-[#141414]/30 uppercase tracking-tighter">
-          Vision model
+          {t('cpr.visionModel')}
         </div>
         <div className="flex items-center gap-2">
           <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
           <div className="text-[7px] font-mono text-[#141414]/30 uppercase tracking-tighter">
-            Camera check
+            {t('cpr.cameraCheck')}
           </div>
         </div>
       </div>

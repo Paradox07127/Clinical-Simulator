@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AIProvider } from '../platform/types';
@@ -12,6 +13,7 @@ interface SettingsModalProps {
 }
 
 export default function SettingsModal({ show, aiConfig, onClose, onConfigChange }: SettingsModalProps) {
+  const { t } = useTranslation();
   const providerButtonClass = (isActive: boolean) => `rounded-xl border px-3 py-3 text-[10px] font-bold uppercase tracking-[0.18em] transition-all ${
     isActive
       ? 'border-[#141414] bg-[#141414] text-[#E4E3E0] shadow-[4px_4px_0px_0px_rgba(20,20,20,1)]'
@@ -40,10 +42,10 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
             <div className="border-b border-[#141414]/10 bg-white/65 px-6 py-5 lg:px-8">
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-2">
-                  <p className="text-[10px] font-mono uppercase tracking-[0.22em] opacity-50">Settings</p>
-                  <h2 className="text-2xl font-black uppercase tracking-tight font-display lg:text-3xl">AI Settings</h2>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.22em] opacity-50">{t('settings.label')}</p>
+                  <h2 className="text-2xl font-black uppercase tracking-tight font-display lg:text-3xl">{t('settings.title')}</h2>
                   <p className="max-w-2xl text-sm leading-relaxed text-[#141414]/65">
-                    Adjust conversation and voice behavior. Changes save automatically in this browser.
+                    {t('settings.description')}
                   </p>
                 </div>
                 <button onClick={onClose} className="rounded-full p-2 transition-colors hover:bg-[#141414]/5">
@@ -56,15 +58,15 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
               <div className="grid gap-5 lg:grid-cols-2">
                 <section className="space-y-5 rounded-2xl border border-[#141414]/10 bg-white/80 p-5 shadow-[6px_6px_0px_0px_rgba(20,20,20,0.08)]">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] opacity-50">Conversation</p>
-                    <h3 className="text-lg font-bold uppercase tracking-tight font-display">Dialogue & Evaluation</h3>
+                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] opacity-50">{t('settings.conversation')}</p>
+                    <h3 className="text-lg font-bold uppercase tracking-tight font-display">{t('settings.dialogueEval')}</h3>
                     <p className="text-sm leading-relaxed text-[#141414]/60">
-                      Patient responses, interview scoring, and session feedback.
+                      {t('settings.dialogueDesc')}
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">Provider</label>
+                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">{t('settings.provider')}</label>
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         onClick={() => onConfigChange({...aiConfig, textProvider: AIProvider.GEMINI, textModel: 'gemini-3.1-pro-preview'})}
@@ -82,7 +84,7 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">API Key</label>
+                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">{t('settings.apiKey')}</label>
                     <input
                       type="password"
                       value={aiConfig.textApiKey}
@@ -94,7 +96,7 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
 
                   {aiConfig.textProvider === AIProvider.OPENAI && (
                     <div className="space-y-2">
-                      <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">Base URL</label>
+                      <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">{t('settings.baseUrl')}</label>
                       <input
                         type="text"
                         value={aiConfig.textBaseUrl || ''}
@@ -106,7 +108,7 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
                   )}
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">Model</label>
+                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">{t('settings.model')}</label>
                     <input
                       type="text"
                       value={aiConfig.textModel || ''}
@@ -119,15 +121,15 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
 
                 <section className="space-y-5 rounded-2xl border border-[#141414]/10 bg-white/80 p-5 shadow-[6px_6px_0px_0px_rgba(20,20,20,0.08)]">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] opacity-50">Voice</p>
-                    <h3 className="text-lg font-bold uppercase tracking-tight font-display">Voice Settings</h3>
+                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] opacity-50">{t('settings.voice')}</p>
+                    <h3 className="text-lg font-bold uppercase tracking-tight font-display">{t('settings.voiceSettings')}</h3>
                     <p className="text-sm leading-relaxed text-[#141414]/60">
-                      Spoken patient output and voice playback used during training.
+                      {t('settings.voiceDesc')}
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">Provider</label>
+                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">{t('settings.provider')}</label>
                     <div className="grid grid-cols-3 gap-3">
                       <button
                         onClick={() => onConfigChange({...aiConfig, speechProvider: AIProvider.GEMINI, speechModel: 'gemini-2.5-flash-preview-tts'})}
@@ -151,7 +153,7 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">API Key</label>
+                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">{t('settings.apiKey')}</label>
                     <input
                       type="password"
                       value={aiConfig.speechApiKey}
@@ -163,7 +165,7 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
 
                   {(aiConfig.speechProvider === AIProvider.OPENAI || aiConfig.speechProvider === AIProvider.QWEN) && (
                     <div className="space-y-2">
-                      <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">Base URL</label>
+                      <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">{t('settings.baseUrl')}</label>
                       <input
                         type="text"
                         value={aiConfig.speechBaseUrl || ''}
@@ -175,7 +177,7 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
                   )}
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">Model / Voice</label>
+                    <label className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-50">{t('settings.modelVoice')}</label>
                     <input
                       type="text"
                       value={aiConfig.speechModel || ''}
@@ -190,13 +192,13 @@ export default function SettingsModal({ show, aiConfig, onClose, onConfigChange 
 
             <div className="flex flex-col gap-3 border-t border-[#141414]/10 bg-white/65 px-6 py-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
               <p className="text-sm leading-relaxed text-[#141414]/60">
-                Changes are saved automatically for this browser.
+                {t('settings.autoSaved')}
               </p>
               <button
                 onClick={onClose}
                 className="inline-flex items-center justify-center rounded-xl bg-[#141414] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#E4E3E0] transition-all hover:bg-[#141414]/90"
               >
-                Done
+                {t('common.done')}
               </button>
             </div>
           </motion.div>

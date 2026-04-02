@@ -1,4 +1,5 @@
 import { useMemo, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { Camera } from 'lucide-react';
 import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
@@ -8,27 +9,28 @@ interface CameraSetupGuideProps {
   onReady: () => void;
 }
 
-const KEY_LANDMARKS = [
-  { index: 11, label: 'L Shoulder' },
-  { index: 12, label: 'R Shoulder' },
-  { index: 13, label: 'L Elbow' },
-  { index: 14, label: 'R Elbow' },
-  { index: 15, label: 'L Wrist' },
-  { index: 16, label: 'R Wrist' },
-] as const;
-
 const VISIBILITY_THRESHOLD = 0.5;
 const COUNTDOWN_SECONDS = 3;
 
 export default function CameraSetupGuide({ landmarks, onReady }: CameraSetupGuideProps) {
+  const { t } = useTranslation();
   const [countdown, setCountdown] = useState<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const countdownActiveRef = useRef(false);
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
 
+  const keyLandmarks = [
+    { index: 11, label: t('cpr.lShoulder') },
+    { index: 12, label: t('cpr.rShoulder') },
+    { index: 13, label: t('cpr.lElbow') },
+    { index: 14, label: t('cpr.rElbow') },
+    { index: 15, label: t('cpr.lWrist') },
+    { index: 16, label: t('cpr.rWrist') },
+  ];
+
   const landmarkStatus = useMemo(() => {
-    return KEY_LANDMARKS.map(kl => {
+    return keyLandmarks.map(kl => {
       const lm = landmarks?.[kl.index];
       const visible = lm ? (lm.visibility ?? 0) > VISIBILITY_THRESHOLD : false;
       return { ...kl, visible };
@@ -85,17 +87,16 @@ export default function CameraSetupGuide({ landmarks, onReady }: CameraSetupGuid
         <div className="bg-white border border-[#141414] rounded-2xl p-6 shadow-[8px_8px_0px_0px_rgba(20,20,20,1)] space-y-4">
           <div className="flex items-center gap-3">
             <Camera className="w-5 h-5" />
-            <h3 className="text-sm font-display font-bold uppercase tracking-[0.16em]">Camera Setup</h3>
+            <h3 className="text-sm font-display font-bold uppercase tracking-[0.16em]">{t('cpr.cameraSetup')}</h3>
           </div>
 
           <p className="text-xs leading-relaxed opacity-70">
-            Hold still until your shoulders, elbows, and wrists are all visible.
-            Training starts automatically once the view is locked in.
+            {t('cpr.cameraSetupDesc')}
           </p>
 
           <div className="space-y-2">
             <div className="text-[10px] font-mono uppercase opacity-50 tracking-widest">
-              Body Tracking ({visibleCount}/6)
+              {t('cpr.bodyTracking')} ({visibleCount}/6)
             </div>
             <div className="grid grid-cols-3 gap-2">
               {landmarkStatus.map(lm => (
@@ -109,7 +110,7 @@ export default function CameraSetupGuide({ landmarks, onReady }: CameraSetupGuid
 
           <div className="h-2 bg-[#141414]/10 rounded-full overflow-hidden">
             <motion.div
-              animate={{ width: `${(visibleCount / KEY_LANDMARKS.length) * 100}%` }}
+              animate={{ width: `${(visibleCount / keyLandmarks.length) * 100}%` }}
               transition={{ duration: 0.3 }}
               className={`h-full rounded-full ${allVisible ? 'bg-emerald-500' : 'bg-amber-500'}`}
             />
@@ -126,9 +127,9 @@ export default function CameraSetupGuide({ landmarks, onReady }: CameraSetupGuid
                 {countdown}
               </motion.div>
             ) : allVisible ? (
-              <div className="text-xs font-bold uppercase text-emerald-600">Locked in. Starting...</div>
+              <div className="text-xs font-bold uppercase text-emerald-600">{t('cpr.lockedIn')}</div>
             ) : (
-              <div className="text-xs font-bold uppercase opacity-40">Adjust your position...</div>
+              <div className="text-xs font-bold uppercase opacity-40">{t('cpr.adjustPosition')}</div>
             )}
           </div>
         </div>

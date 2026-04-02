@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { User, FileText, Target, CheckSquare, ArrowRight, Video } from 'lucide-react';
 import type { CprScenario } from '../types';
@@ -12,12 +13,6 @@ interface CprBriefProps {
   onStart: () => void;
   onBack: () => void;
 }
-
-const SETUP_CHECKLIST = [
-  'Camera ready?',
-  'Upper body visible?',
-  'Space to move?',
-];
 
 const DIFFICULTY_COLOR: Record<string, string> = {
   Beginner: 'bg-emerald-500',
@@ -50,8 +45,12 @@ const DIFFICULTY_BORDER: Record<string, { border: string; hoverBorder: string; s
 };
 
 export default function CprBrief({ scenario, allScenarios, onSelectScenario, onStart, onBack }: CprBriefProps) {
+  const { t } = useTranslation();
   const [showVideoModal, setShowVideoModal] = useState(false);
-  const [checkedItems, setCheckedItems] = useState<boolean[]>(SETUP_CHECKLIST.map(() => false));
+
+  const setupChecklist = [t('cpr.cameraReady'), t('cpr.upperBody'), t('cpr.spaceToMove')];
+
+  const [checkedItems, setCheckedItems] = useState<boolean[]>(setupChecklist.map(() => false));
 
   const toggleItem = (idx: number) => {
     setCheckedItems(prev => {
@@ -61,16 +60,18 @@ export default function CprBrief({ scenario, allScenarios, onSelectScenario, onS
     });
   };
 
-  const SUMMARY_ITEMS = [
+  const getDiffLabel = (d: string) => d === 'Beginner' ? t('cpr.beginner') : d === 'Intermediate' ? t('cpr.intermediate') : t('cpr.advanced');
+
+  const summaryItems = [
     {
       icon: User,
-      label: 'Your Role',
-      content: 'Respond to an adult collapse and maintain safe, steady CPR.',
+      label: t('cpr.yourRole'),
+      content: t('cpr.roleDesc'),
     },
     {
       icon: Target,
-      label: 'Scoring Criteria',
-      content: 'You will be scored on rhythm, form, recoil, consistency, and CPR sequence.',
+      label: t('cpr.scoringCriteria'),
+      content: t('cpr.scoringDesc'),
     },
   ];
 
@@ -87,21 +88,21 @@ export default function CprBrief({ scenario, allScenarios, onSelectScenario, onS
           <div className="bg-[#141414] px-5 py-4 lg:px-6 lg:py-3.5 flex items-center justify-between gap-4">
             <div>
               <h2 className="text-lg lg:text-xl font-display font-bold uppercase tracking-[0.16em] text-[#E4E3E0]">
-                Training Brief
+                {t('cpr.trainingBrief')}
               </h2>
               <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#E4E3E0]/50 mt-1">
-                Before you begin
+                {t('cpr.beforeBegin')}
               </p>
             </div>
             <div className={`${DIFFICULTY_COLOR[scenario.difficulty] ?? 'bg-gray-500'} shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white`}>
-              {scenario.difficulty}
+              {getDiffLabel(scenario.difficulty)}
             </div>
           </div>
 
           <div className="p-4 lg:p-3.5 grid gap-2.5 content-start lg:overflow-hidden">
             <div className="space-y-2">
               <span className="text-[10px] font-mono uppercase opacity-50 tracking-[0.18em]">
-                Select Scenario
+                {t('cpr.selectScenario')}
               </span>
               <div className="grid gap-2 lg:grid-cols-3">
                 {allScenarios.map((s) => {
@@ -120,10 +121,10 @@ export default function CprBrief({ scenario, allScenarios, onSelectScenario, onS
                       <div className="flex items-center justify-between gap-2">
                         <span className={`inline-flex items-center gap-2 rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] border ${meta.border} ${meta.color}`}>
                           <span className={`w-2 h-2 rounded-full ${meta.dot} shrink-0`} />
-                          {s.difficulty}
+                          {getDiffLabel(s.difficulty)}
                         </span>
                         <span className="text-[9px] font-mono uppercase tracking-[0.16em] opacity-40">
-                          {s.trainingMode === 'CONVENTIONAL_30_2' ? '30:2' : 'Hands-Only'}
+                          {s.trainingMode === 'CONVENTIONAL_30_2' ? '30:2' : t('cpr.handsOnly')}
                         </span>
                       </div>
                       <p className="text-sm font-bold font-display mt-2 leading-tight">{s.title}</p>
@@ -138,12 +139,12 @@ export default function CprBrief({ scenario, allScenarios, onSelectScenario, onS
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <span className="text-[10px] font-mono uppercase opacity-50 tracking-[0.18em]">
-                    Selected Scenario
+                    {t('cpr.selectedScenario')}
                   </span>
                   <h3 className="mt-1.5 text-xl font-display font-bold uppercase tracking-tight leading-tight">{scenario.title}</h3>
                 </div>
                 <span className="text-[10px] font-mono uppercase opacity-40 tracking-[0.16em] shrink-0 mt-1">
-                  {scenario.trainingMode === 'CONVENTIONAL_30_2' ? '30:2' : 'Hands-Only'}
+                  {scenario.trainingMode === 'CONVENTIONAL_30_2' ? '30:2' : t('cpr.handsOnly')}
                 </span>
               </div>
               <p className="text-sm leading-relaxed mt-2 opacity-70">
@@ -154,8 +155,8 @@ export default function CprBrief({ scenario, allScenarios, onSelectScenario, onS
             {/* Info cards — 2x2 grid with equal height rows, then checklist */}
             <div className="grid gap-2.5 lg:grid-cols-2">
               {[
-                { icon: FileText, label: 'First Priorities', type: 'tags' as const },
-                ...SUMMARY_ITEMS.map(s => ({ ...s, type: 'text' as const })),
+                { icon: FileText, label: t('cpr.firstPriorities'), type: 'tags' as const },
+                ...summaryItems.map(s => ({ ...s, type: 'text' as const })),
               ].map((item, idx) => {
                 const Icon = item.icon;
                 return (
@@ -204,14 +205,14 @@ export default function CprBrief({ scenario, allScenarios, onSelectScenario, onS
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-emerald-700/60">
-                      Setup Checklist
+                      {t('cpr.setupChecklist')}
                     </span>
                     <span className="text-[10px] font-bold text-emerald-600">
-                      {checkedItems.filter(Boolean).length}/{SETUP_CHECKLIST.length}
+                      {checkedItems.filter(Boolean).length}/{setupChecklist.length}
                     </span>
                   </div>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
-                    {SETUP_CHECKLIST.map((item, idx) => (
+                    {setupChecklist.map((item, idx) => (
                       <button
                         key={idx}
                         onClick={() => toggleItem(idx)}
@@ -237,13 +238,13 @@ export default function CprBrief({ scenario, allScenarios, onSelectScenario, onS
 
           {/* Actions */}
           <div className="px-4 pb-4 pt-0 lg:px-5 lg:pb-5 flex items-center justify-between gap-4 border-t border-[#141414]/10 bg-white">
-            <BackActionButton label="Back to Modules" onClick={onBack} />
+            <BackActionButton label={t('cpr.backToModules')} onClick={onBack} />
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowVideoModal(true)}
                 className="flex items-center gap-2 border border-[#141414] px-5 lg:px-6 py-3 rounded-xl font-bold uppercase tracking-[0.16em] text-sm hover:bg-[#141414]/5 transition-all"
               >
-                <Video className="w-4 h-4" /> Watch Technique Demo
+                <Video className="w-4 h-4" /> {t('cpr.watchDemo')}
               </button>
               <motion.button
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -252,7 +253,7 @@ export default function CprBrief({ scenario, allScenarios, onSelectScenario, onS
                 onClick={onStart}
                 className="flex items-center gap-2 bg-[#141414] text-[#E4E3E0] px-6 lg:px-8 py-3 rounded-xl font-bold uppercase tracking-[0.16em] hover:bg-[#141414]/90 transition-all shadow-[8px_8px_0px_0px_rgba(20,20,20,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(20,20,20,1)] text-sm"
               >
-                Begin Session <ArrowRight className="w-4 h-4" />
+                {t('cpr.beginSession')} <ArrowRight className="w-4 h-4" />
               </motion.button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { RefreshCw, Stethoscope } from 'lucide-react';
 import { AnimatePresence } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import type { ModuleScreenProps } from '../../../platform/types';
 import { InterviewStatus } from '../types';
 import type { PatientCase, Assessment, FeedbackReport } from '../types';
@@ -24,6 +25,7 @@ const USE_NEW_ORCHESTRATION = true;
 
 
 export default function InterviewScreen({ aiConfig, onBack, registerGlobalBackHandler }: ModuleScreenProps) {
+  const { t } = useTranslation();
   const [showBrief, setShowBrief] = useState(false);
   const [status, setStatus] = useState<InterviewStatus>(InterviewStatus.IDLE);
   const [currentCase, setCurrentCase] = useState<PatientCase | null>(null);
@@ -236,8 +238,8 @@ export default function InterviewScreen({ aiConfig, onBack, registerGlobalBackHa
           <Stethoscope className="w-6 h-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
         <div className="text-center space-y-2">
-          <h2 className="text-xl font-bold uppercase tracking-widest">Analyzing Interview</h2>
-          <p className="text-sm opacity-50 font-mono">Evaluating clinical reasoning and communication efficiency...</p>
+          <h2 className="text-xl font-bold uppercase tracking-widest">{t('interview.analyzingInterview')}</h2>
+          <p className="text-sm opacity-50 font-mono">{t('interview.analyzingDesc')}</p>
         </div>
       </div>
     );
@@ -249,12 +251,12 @@ export default function InterviewScreen({ aiConfig, onBack, registerGlobalBackHa
       <div className="lg:col-span-4 space-y-3">
         {/* Exit confirm banner */}
         <InlineConfirm
-          message="You are in the middle of a session. Exit anyway?"
+          message={t('interview.exitWarning')}
           isVisible={showExitConfirm}
           onConfirm={confirmExit}
           onCancel={() => setShowExitConfirm(false)}
-          confirmLabel="Exit"
-          cancelLabel="Stay"
+          confirmLabel={t('common.exit')}
+          cancelLabel={t('common.stay')}
           variant="danger"
         />
 

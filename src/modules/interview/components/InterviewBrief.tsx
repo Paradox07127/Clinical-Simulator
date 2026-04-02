@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { User, Bed, Target, Lightbulb, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { PatientCase } from '../types';
 import BackActionButton from '../../../app/BackActionButton';
 
@@ -10,33 +11,16 @@ interface InterviewBriefProps {
   onBack: () => void;
 }
 
-const BRIEF_ITEMS = [
-  {
-    icon: User,
-    label: 'Your Role',
-    getText: () => 'You are a medical student conducting a clinical interview.',
-  },
-  {
-    icon: Bed,
-    label: 'Patient Setting',
-    getText: (c: PatientCase) =>
-      `${c.name}, ${c.age}y ${c.gender}. The patient will describe their chief complaint when the session begins.`,
-  },
-  {
-    icon: Target,
-    label: 'Scoring Criteria',
-    getText: () =>
-      'You will be scored on history coverage, reasoning, diagnosis, communication, efficiency, and safety.',
-  },
-  {
-    icon: Lightbulb,
-    label: 'What a Good Session Looks Like',
-    getText: () =>
-      'Start broad, cover key history, then narrow with empathy.',
-  },
-] as const;
-
 export default function InterviewBrief({ patientCase, onStart, onBack }: InterviewBriefProps) {
+  const { t } = useTranslation();
+
+  const briefItems = [
+    { icon: User, label: t('interview.yourRole'), getText: () => t('interview.roleDesc') },
+    { icon: Bed, label: t('interview.patientSetting'), getText: (c: PatientCase) => t('interview.patientSettingDesc', { name: c.name, age: c.age, gender: c.gender }) },
+    { icon: Target, label: t('interview.scoringCriteria'), getText: () => t('interview.scoringDesc') },
+    { icon: Lightbulb, label: t('interview.goodSession'), getText: () => t('interview.goodSessionDesc') },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -52,10 +36,10 @@ export default function InterviewBrief({ patientCase, onStart, onBack }: Intervi
               {patientCase.name} / {patientCase.age} / {patientCase.gender}
             </p>
             <h2 className="text-lg lg:text-xl font-bold uppercase tracking-[0.16em] text-[#E4E3E0] font-display">
-              Case Brief
+              {t('interview.caseBrief')}
             </h2>
             <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#E4E3E0]/50 mt-1">
-              Before you begin
+              {t('interview.beforeBegin')}
             </p>
           </div>
           <div className={`text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.16em] shrink-0 ${
@@ -69,7 +53,7 @@ export default function InterviewBrief({ patientCase, onStart, onBack }: Intervi
 
         {/* Brief items */}
         <div className="p-4 lg:p-5 grid gap-3 lg:grid-cols-2 content-start">
-          {BRIEF_ITEMS.map((item, idx) => {
+          {briefItems.map((item, idx) => {
             const Icon = item.icon;
             return (
               <motion.div
@@ -97,7 +81,7 @@ export default function InterviewBrief({ patientCase, onStart, onBack }: Intervi
 
         {/* Actions */}
         <div className="px-4 pb-4 pt-0 lg:px-5 lg:pb-5 flex items-center justify-between gap-4 border-t border-[#141414]/10 bg-white">
-          <BackActionButton label="Back to Cases" onClick={onBack} />
+          <BackActionButton label={t('interview.backToCases')} onClick={onBack} />
           <motion.button
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -105,7 +89,7 @@ export default function InterviewBrief({ patientCase, onStart, onBack }: Intervi
             onClick={onStart}
             className="flex items-center gap-2 bg-[#141414] text-[#E4E3E0] px-6 lg:px-8 py-3 rounded-xl font-bold uppercase tracking-[0.16em] hover:bg-[#141414]/90 transition-all shadow-[8px_8px_0px_0px_rgba(20,20,20,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(20,20,20,1)] text-sm"
           >
-            Begin Interview <ArrowRight className="w-4 h-4" />
+            {t('interview.beginInterview')} <ArrowRight className="w-4 h-4" />
           </motion.button>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import { Shield, Hand, Phone, Wind, HeartPulse, Zap, RefreshCw, CheckCircle2 } from 'lucide-react';
 import type { CprPhase, CprTrainingMode } from '../types';
@@ -26,72 +27,6 @@ interface PhaseConfig {
   accent: string;
 }
 
-const PHASE_CONFIGS: Partial<Record<CprPhase, PhaseConfig>> = {
-  SCENE_SAFETY: {
-    icon: Shield,
-    step: 'Step 1',
-    title: 'Scene Safety',
-    instruction: 'Look around for hazards. Is the scene safe to approach?',
-    detail: 'Check for traffic, fire, electrical hazards, or other dangers before approaching the victim.',
-    buttonLabel: 'Scene is Safe',
-    accent: 'border-[#0d9488]/20 bg-[#0d9488]/10 text-[#0d9488]',
-  },
-  CHECK_RESPONSE: {
-    icon: Hand,
-    step: 'Step 2',
-    title: 'Check Responsiveness',
-    instruction: 'Tap the victim on the shoulder and shout "Are you okay?"',
-    detail: 'Tap firmly on both shoulders. Shout clearly. Wait a few seconds for any response.',
-    buttonLabel: 'No Response',
-    accent: 'border-amber-500/20 bg-amber-500/10 text-amber-700',
-  },
-  CALL_FOR_HELP: {
-    icon: Phone,
-    step: 'Step 3',
-    title: 'Call 911',
-    instruction: 'Call 911 or direct a bystander to call. Request an AED.',
-    detail: 'If alone, put phone on speaker. Tell the dispatcher your location and that someone is unresponsive.',
-    buttonLabel: 'Help Called',
-    accent: 'border-red-500/20 bg-red-500/10 text-red-600',
-  },
-  CHECK_BREATHING: {
-    icon: Wind,
-    step: 'Step 4',
-    title: 'Check Breathing',
-    instruction: 'Look, listen, and feel for breathing (max 10 seconds).',
-    detail: 'Look for chest rise, listen for breath sounds, feel for air on your cheek. Gasping is NOT normal breathing.',
-    buttonLabel: 'Not Breathing',
-    accent: 'border-[#141414]/15 bg-[#141414]/[0.05] text-[#141414]',
-  },
-  VENTILATION: {
-    icon: Wind,
-    step: 'Breaths',
-    title: 'Rescue Breaths',
-    instruction: 'Tilt the head, lift the chin, and deliver rescue breaths.',
-    detail: 'Pinch the nose, seal your mouth over theirs, and give 1 breath over 1 second. Watch for chest rise.',
-    buttonLabel: 'Breath Delivered',
-    accent: 'border-[#0d9488]/20 bg-[#0d9488]/10 text-[#0d9488]',
-  },
-  CYCLE_BREAK: {
-    icon: RefreshCw,
-    step: 'Cycle Break',
-    title: 'Switch Rescuers',
-    instruction: 'You have been compressing for 2 minutes. Switch with another rescuer if available.',
-    detail: 'Complete the switch in under 10 seconds to minimize interruptions.',
-    buttonLabel: 'Resume Compressions',
-    accent: 'border-amber-500/20 bg-amber-500/10 text-amber-700',
-  },
-  AED_PROMPT: {
-    icon: Zap,
-    step: 'AED',
-    title: 'AED Arrived',
-    instruction: 'Turn on the AED and follow the voice prompts.',
-    detail: 'Attach pads to bare chest. Ensure no one is touching the patient during analysis.',
-    buttonLabel: 'AED Applied',
-    accent: 'border-red-500/20 bg-red-500/10 text-red-600',
-  },
-};
-
 /** Phases that should show the overlay */
 const OVERLAY_PHASES: CprPhase[] = [
   'SCENE_SAFETY',
@@ -110,8 +45,48 @@ export default function PhaseGuideOverlay({
   ventilationBreathCount = 0,
   cycleStats,
 }: PhaseGuideOverlayProps) {
+  const { t } = useTranslation();
+
+  const phaseConfigs: Partial<Record<CprPhase, PhaseConfig>> = {
+    SCENE_SAFETY: {
+      icon: Shield, step: t('cpr.sceneSafetyStep'), title: t('cpr.sceneSafety'),
+      instruction: t('cpr.sceneSafetyInst'), detail: t('cpr.sceneSafetyDetail'),
+      buttonLabel: t('cpr.sceneSafetyBtn'), accent: 'border-[#0d9488]/20 bg-[#0d9488]/10 text-[#0d9488]',
+    },
+    CHECK_RESPONSE: {
+      icon: Hand, step: t('cpr.checkResponseStep'), title: t('cpr.checkResponse'),
+      instruction: t('cpr.checkResponseInst'), detail: t('cpr.checkResponseDetail'),
+      buttonLabel: t('cpr.checkResponseBtn'), accent: 'border-amber-500/20 bg-amber-500/10 text-amber-700',
+    },
+    CALL_FOR_HELP: {
+      icon: Phone, step: t('cpr.callHelpStep'), title: t('cpr.callHelp'),
+      instruction: t('cpr.callHelpInst'), detail: t('cpr.callHelpDetail'),
+      buttonLabel: t('cpr.callHelpBtn'), accent: 'border-red-500/20 bg-red-500/10 text-red-600',
+    },
+    CHECK_BREATHING: {
+      icon: Wind, step: t('cpr.checkBreathingStep'), title: t('cpr.checkBreathing'),
+      instruction: t('cpr.checkBreathingInst'), detail: t('cpr.checkBreathingDetail'),
+      buttonLabel: t('cpr.checkBreathingBtn'), accent: 'border-[#141414]/15 bg-[#141414]/[0.05] text-[#141414]',
+    },
+    VENTILATION: {
+      icon: Wind, step: t('cpr.breathsStep'), title: t('cpr.rescueBreaths'),
+      instruction: t('cpr.rescueBreathsInst'), detail: t('cpr.rescueBreathsDetail'),
+      buttonLabel: t('cpr.breathDelivered'), accent: 'border-[#0d9488]/20 bg-[#0d9488]/10 text-[#0d9488]',
+    },
+    CYCLE_BREAK: {
+      icon: RefreshCw, step: t('cpr.cycleBreak'), title: t('cpr.switchRescuers'),
+      instruction: t('cpr.switchInst'), detail: t('cpr.switchDetail'),
+      buttonLabel: t('cpr.resumeCompressions'), accent: 'border-amber-500/20 bg-amber-500/10 text-amber-700',
+    },
+    AED_PROMPT: {
+      icon: Zap, step: t('cpr.aedStep'), title: t('cpr.aedArrived'),
+      instruction: t('cpr.aedInst'), detail: t('cpr.aedDetail'),
+      buttonLabel: t('cpr.aedApplied'), accent: 'border-red-500/20 bg-red-500/10 text-red-600',
+    },
+  };
+
   const shouldShow = OVERLAY_PHASES.includes(currentPhase);
-  const config = PHASE_CONFIGS[currentPhase];
+  const config = phaseConfigs[currentPhase];
 
   // Don't show BLS overlays for HANDS_ONLY mode (including CYCLE_BREAK which is skipped)
   if (trainingMode === 'HANDS_ONLY' && ['SCENE_SAFETY', 'CHECK_RESPONSE', 'CALL_FOR_HELP', 'CHECK_BREATHING', 'VENTILATION', 'CYCLE_BREAK', 'AED_PROMPT'].includes(currentPhase)) {
@@ -169,11 +144,11 @@ export default function PhaseGuideOverlay({
               <div className="mt-5 flex items-center justify-center gap-3">
                 <div className={`flex items-center gap-1.5 ${ventilationBreathCount >= 1 ? 'opacity-100' : 'opacity-40'}`}>
                   <CheckCircle2 className="w-5 h-5" />
-                  <span className="text-sm font-bold">Breath 1</span>
+                  <span className="text-sm font-bold">{t('cpr.breath1')}</span>
                 </div>
                 <div className={`flex items-center gap-1.5 ${ventilationBreathCount >= 2 ? 'opacity-100' : 'opacity-40'}`}>
                   <CheckCircle2 className="w-5 h-5" />
-                  <span className="text-sm font-bold">Breath 2</span>
+                  <span className="text-sm font-bold">{t('cpr.breath2')}</span>
                 </div>
               </div>
             )}
@@ -183,15 +158,15 @@ export default function PhaseGuideOverlay({
               <div className="mt-5 grid grid-cols-3 gap-3 text-center">
                 <div>
                   <div className="text-2xl font-bold">{cycleStats.compressionCount}</div>
-                  <div className="text-[10px] uppercase opacity-50">Compressions</div>
+                  <div className="text-[10px] uppercase opacity-50">{t('cpr.compressions')}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{cycleStats.averageRate}</div>
-                  <div className="text-[10px] uppercase opacity-50">Avg CPM</div>
+                  <div className="text-[10px] uppercase opacity-50">{t('cpr.avgCPM')}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold">Cycle {cycleStats.cycleNumber}</div>
-                  <div className="text-[10px] uppercase opacity-50">Completed</div>
+                  <div className="text-[10px] uppercase opacity-50">{t('cpr.completed')}</div>
                 </div>
               </div>
             )}
@@ -205,8 +180,8 @@ export default function PhaseGuideOverlay({
             >
               {currentPhase === 'VENTILATION'
                 ? ventilationBreathCount >= 1
-                  ? 'Breath 2 Done'
-                  : 'Breath 1 Done'
+                  ? t('cpr.breath2Done')
+                  : t('cpr.breath1Done')
                 : config.buttonLabel}
             </motion.button>
           </motion.div>

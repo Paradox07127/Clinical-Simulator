@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 import { Mic, MicOff, Send, MessageSquare, Volume2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import type { Message, AIConfig } from '../../../platform/types';
 import type { SessionState } from '../types';
 import GuidanceCard from '../../../app/GuidanceCard';
@@ -20,8 +22,9 @@ interface InterviewChatProps {
 
 function useGuidanceHint(
   messages: Message[],
-  sessionState?: SessionState,
-  beginnerMode?: boolean
+  sessionState: SessionState | undefined,
+  beginnerMode: boolean | undefined,
+  t: TFunction
 ): { title: string; description: string; tips?: string[]; variant: 'info' | 'action' | 'success' | 'warning' } | null {
   return useMemo(() => {
     const studentMessages = messages.filter((m) => m.role === 'student');
@@ -41,10 +44,10 @@ function useGuidanceHint(
     // After the first exchange
     if (studentCount === 1) {
       return {
-        title: 'Explore Further',
-        description: 'Good. Now explore onset, duration, and triggers.',
+        title: t('interview.exploreFurther'),
+        description: t('interview.exploreDesc'),
         tips: beginnerMode
-          ? ['When did the symptoms start?', 'How long do they last?', 'What makes them worse?']
+          ? [t('interview.exploreTip1'), t('interview.exploreTip2'), t('interview.exploreTip3')]
           : undefined,
         variant: 'info' as const,
       };
@@ -53,9 +56,9 @@ function useGuidanceHint(
     // After 2 exchanges — suggest widening
     if (studentCount === 2 && beginnerMode) {
       return {
-        title: 'Dig Deeper',
-        description: 'Ask about associated symptoms and severity.',
-        tips: ['Any other symptoms alongside the main complaint?', 'How severe is it on a scale of 1-10?'],
+        title: t('interview.digDeeper'),
+        description: t('interview.digDeeperDesc'),
+        tips: [t('interview.digTip1'), t('interview.digTip2')],
         variant: 'info' as const,
       };
     }
@@ -63,17 +66,17 @@ function useGuidanceHint(
     // Stuck: no progress for several turns
     if (turnsWithoutProgress > (beginnerMode ? 1 : 2)) {
       return {
-        title: 'Try a Different Angle',
-        description: 'Consider asking about past medical history or medications.',
+        title: t('interview.tryDifferent'),
+        description: t('interview.tryDifferentDesc'),
         tips: beginnerMode
-          ? ['Do you have any other health conditions?', 'Are you currently taking any medications?', 'Any family history of similar problems?']
+          ? [t('interview.tryTip1'), t('interview.tryTip2'), t('interview.tryTip3')]
           : undefined,
         variant: 'warning' as const,
       };
     }
 
     return null;
-  }, [messages, sessionState, beginnerMode]);
+  }, [messages, sessionState, beginnerMode, t]);
 }
 
 export default function InterviewChat({
@@ -89,12 +92,13 @@ export default function InterviewChat({
   sessionState,
   beginnerMode,
 }: InterviewChatProps) {
+  const { t } = useTranslation();
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const exchangeLabel = `${messages.length} ${messages.length === 1 ? 'Exchange' : 'Exchanges'}`;
+  const exchangeLabel = `${messages.length} ${messages.length === 1 ? t('interview.exchange') : t('interview.exchanges')}`;
   const starterPrompts = [
-    'Can you tell me more about when the breathlessness started?',
-    'What seems to make it worse or bring it on?',
-    'Have you noticed chest pain, cough, or swollen ankles with it?',
+    t('interview.starterPrompt1'),
+    t('interview.starterPrompt2'),
+    t('interview.starterPrompt3'),
   ];
 
   useEffect(() => {
@@ -112,7 +116,7 @@ export default function InterviewChat({
     }
   };
 
-  const guidanceHint = useGuidanceHint(messages, sessionState, beginnerMode);
+  const guidanceHint = useGuidanceHint(messages, sessionState, beginnerMode, t);
   const studentMessages = messages.filter((msg) => msg.role === 'student');
 
   return (
@@ -128,15 +132,15 @@ export default function InterviewChat({
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-[#0d9488]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#0d9488]">Interview Session</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0d9488]">{t('interview.interviewSession')}</span>
           </div>
 
           <div className="hidden md:flex items-center gap-2 border-l border-[#141414]/10 pl-4">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#141414]/10 bg-white px-3 py-1 text-[9px] font-mono uppercase tracking-[0.16em] opacity-65">
-              Patient Simulation
+              {t('interview.patientSimulation')}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#141414]/10 bg-white px-3 py-1 text-[9px] font-mono uppercase tracking-[0.16em] opacity-65">
-              {aiConfig.speechProvider ? 'Voice Ready' : 'Voice Off'}
+              {aiConfig.speechProvider ? t('interview.voiceReady') : t('interview.voiceOff')}
             </span>
           </div>
         </div>
@@ -160,7 +164,7 @@ export default function InterviewChat({
             ) : (
               <div className={`max-w-[80%] space-y-1 ${msg.role === 'student' ? 'items-end' : 'items-start'}`}>
                 <div className={`text-[10px] font-mono uppercase opacity-50 px-2 ${msg.role === 'student' ? 'text-right' : 'text-left'}`}>
-                  {msg.role === 'student' ? 'Student' : 'Patient'}
+                  {msg.role === 'student' ? t('interview.student') : t('interview.patient')}
                 </div>
                 <div className={`p-4 rounded-2xl text-sm leading-relaxed ${
                   msg.role === 'student'
@@ -191,9 +195,9 @@ export default function InterviewChat({
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-[#0d9488]" />
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-45">Suggested Opening</p>
+                <p className="text-[10px] font-mono uppercase tracking-[0.18em] opacity-45">{t('interview.suggestedOpening')}</p>
                 <p className="text-sm font-medium leading-relaxed">
-                  Start with an open question, then expand into onset, triggers, and associated symptoms.
+                  {t('interview.suggestedOpeningDesc')}
                 </p>
               </div>
             </div>
@@ -246,7 +250,7 @@ export default function InterviewChat({
         <button
           type="button"
           onClick={onToggleListening}
-          title={isSupported ? "Voice Input" : "Speech Recognition not supported in this browser"}
+          title={isSupported ? t('interview.voiceInput') : t('interview.voiceNotSupported')}
           className={`p-4 rounded-xl border border-[#141414] transition-all ${
             !isSupported ? 'opacity-20 cursor-not-allowed bg-gray-100' :
             isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-white hover:bg-[#0d9488] hover:text-white'
@@ -258,7 +262,7 @@ export default function InterviewChat({
           type="text"
           value={inputText}
           onChange={(e) => onInputChange(e.target.value)}
-          placeholder="Ask the patient a question..."
+          placeholder={t('interview.askPatient')}
           className="flex-1 p-4 border border-[#141414] rounded-xl text-sm focus:outline-none focus:ring-2 ring-[#0d9488]/20"
         />
         <button

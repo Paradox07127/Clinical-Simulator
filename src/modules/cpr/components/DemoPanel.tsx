@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ChevronDown,
@@ -28,6 +29,7 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 };
 
 export default function DemoPanel({ isOpen, onToggle }: DemoPanelProps) {
+  const { t } = useTranslation();
   return (
     <div className="pt-4 border-t border-[#141414]/10">
       <button
@@ -37,7 +39,7 @@ export default function DemoPanel({ isOpen, onToggle }: DemoPanelProps) {
         <div className="flex items-center gap-2">
           <BookOpen className="w-4 h-4" />
           <span className="text-[10px] font-bold uppercase tracking-widest">
-            CPR Quick Reference
+            {t('cpr.cprQuickRef')}
           </span>
         </div>
         {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -75,7 +77,7 @@ export default function DemoPanel({ isOpen, onToggle }: DemoPanelProps) {
 
               <div className="p-2 text-center">
                 <span className="text-[8px] font-mono uppercase tracking-widest opacity-30">
-                  Source: AHA 2020 BLS Guidelines
+                  {t('cpr.ahaBls')}
                 </span>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -9,14 +10,15 @@ interface DemoVideoModalProps {
 
 const YOUTUBE_VIDEO_ID = 'M4ACYp75mjU';
 
-const KEY_POINTS = [
-  { time: '0:00', text: 'Call 911 first (or have someone else call)' },
-  { time: '0:15', text: 'Push hard and fast in the center of the chest' },
-  { time: '0:25', text: 'Rate: 100-120 compressions per minute' },
-  { time: '0:35', text: 'Continue until help arrives' },
-];
-
 export default function DemoVideoModal({ isOpen, onClose }: DemoVideoModalProps) {
+  const { t } = useTranslation();
+
+  const keyPoints = [
+    { time: '0:00', text: t('cpr.keyPoint1') },
+    { time: '0:15', text: t('cpr.keyPoint2') },
+    { time: '0:25', text: t('cpr.keyPoint3') },
+    { time: '0:35', text: t('cpr.keyPoint4') },
+  ];
   return (
     <AnimatePresence>
       {isOpen && (
@@ -37,8 +39,8 @@ export default function DemoVideoModal({ isOpen, onClose }: DemoVideoModalProps)
             {/* Header */}
             <div className="bg-[#141414] p-4 flex justify-between items-center">
               <div>
-                <h2 className="text-lg font-bold uppercase tracking-widest text-[#E4E3E0]">CPR Demonstration</h2>
-                <p className="text-[9px] font-mono uppercase tracking-widest text-[#E4E3E0]/50">AHA Hands-Only CPR</p>
+                <h2 className="text-lg font-bold uppercase tracking-widest text-[#E4E3E0]">{t('cpr.cprDemo')}</h2>
+                <p className="text-[9px] font-mono uppercase tracking-widest text-[#E4E3E0]/50">{t('cpr.ahaCpr')}</p>
               </div>
               <button
                 onClick={onClose}
@@ -61,9 +63,9 @@ export default function DemoVideoModal({ isOpen, onClose }: DemoVideoModalProps)
 
             {/* Key Points */}
             <div className="p-5 space-y-4">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest opacity-60">Key Points</h3>
+              <h3 className="text-[10px] font-bold uppercase tracking-widest opacity-60">{t('cpr.keyPoints')}</h3>
               <div className="grid grid-cols-2 gap-2">
-                {KEY_POINTS.map((point, i) => (
+                {keyPoints.map((point, i) => (
                   <div key={i} className="flex items-start gap-2 p-2 bg-white rounded-lg border border-[#141414]/10">
                     <span className="text-[9px] font-mono bg-[#141414] text-[#E4E3E0] px-1.5 py-0.5 rounded shrink-0">{point.time}</span>
                     <span className="text-[10px] leading-tight">{point.text}</span>
@@ -72,14 +74,14 @@ export default function DemoVideoModal({ isOpen, onClose }: DemoVideoModalProps)
               </div>
 
               <div className="flex items-center justify-between pt-3 border-t border-[#141414]/10">
-                <p className="text-[8px] font-mono uppercase opacity-40">Source: American Heart Association</p>
+                <p className="text-[8px] font-mono uppercase opacity-40">{t('cpr.ahaSource')}</p>
                 <a
                   href="https://cpr.heart.org/en/cpr-courses-and-kits/hands-only-cpr"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider opacity-50 hover:opacity-100 transition-opacity"
                 >
-                  AHA Resources <ExternalLink className="w-3 h-3" />
+                  {t('cpr.ahaResources')} <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
             </div>

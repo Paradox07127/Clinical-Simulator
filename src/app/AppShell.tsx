@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ModuleEntry } from '../platform/types';
 import { MODULE_REGISTRY, loadModule } from './moduleRegistry';
 import { useAIConfig } from './useAIConfig';
@@ -7,6 +8,7 @@ import SettingsModal from './SettingsModal';
 import ModuleSelector from './ModuleSelector';
 
 export default function AppShell() {
+  const { t } = useTranslation();
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [moduleEntry, setModuleEntry] = useState<ModuleEntry | null>(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -56,6 +58,12 @@ export default function AppShell() {
     ? MODULE_REGISTRY.find(m => m.id === activeModuleId)
     : null;
 
+  const getModuleTitle = (id: string | undefined) => {
+    if (id === 'INTERVIEW') return t('modules.interview.title');
+    if (id === 'CPR') return t('modules.cpr.title');
+    return activeModuleDef?.title || t('header.title');
+  };
+
   const mainViewportClass = activeModuleId
     ? 'overflow-visible lg:overflow-hidden'
     : 'overflow-y-auto';
@@ -77,15 +85,16 @@ export default function AppShell() {
       {/* Background watermark text — z-[1], behind all content */}
       <div className="fixed bottom-0 left-0 right-0 text-center opacity-[0.04] pointer-events-none z-[1] overflow-hidden">
         <div className="text-[100px] font-bold tracking-tighter uppercase leading-none whitespace-nowrap">
-          {activeModuleDef?.title || 'Clinical Simulator'}
+          {getModuleTitle(activeModuleId ?? undefined)}
         </div>
-        <div className="text-[100px] font-bold tracking-tighter uppercase leading-none outline-text whitespace-nowrap">Simulator</div>
+        <div className="text-[100px] font-bold tracking-tighter uppercase leading-none outline-text whitespace-nowrap">{t('header.title')}</div>
       </div>
 
       {/* Main content — z-10, above watermark */}
       <div className="relative z-10 flex flex-col min-h-screen lg:h-dvh">
         <Header
-          activeModuleTitle={activeModuleDef?.title || null}
+          activeModuleTitle={activeModuleId ? getModuleTitle(activeModuleId) : null}
+          activeModuleId={activeModuleId}
           status={activeModuleId ? 'ACTIVE' : 'IDLE'}
           onBack={handleHeaderBack}
           onOpenSettings={() => setShowSettings(true)}
@@ -107,7 +116,7 @@ export default function AppShell() {
             />
           ) : (
             <div className="lg:col-span-12 flex items-center justify-center h-[400px]">
-              <p className="text-sm opacity-50 font-mono uppercase">Loading module...</p>
+              <p className="text-sm opacity-50 font-mono uppercase">{t('common.loading')}</p>
             </div>
           )}
         </div>
