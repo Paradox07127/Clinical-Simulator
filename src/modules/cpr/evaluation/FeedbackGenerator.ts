@@ -13,16 +13,16 @@ export interface CprFeedbackSummary {
 /** Identify the weakest dimension and return an improvement suggestion */
 function identifyFocusArea(breakdown: CprEvaluation['breakdown']): string {
   const dimensions: { name: string; score: number; advice: string }[] = [
-    { name: 'Rhythm', score: breakdown.rhythm, advice: 'AHA recommends 100-120 compressions per minute. Practice with a metronome set to 110 BPM.' },
-    { name: 'Form', score: breakdown.form, advice: 'Focus on locking elbows, centering hands over the sternum, and keeping shoulders stacked over hands.' },
-    { name: 'Depth', score: breakdown.depthProxy ?? 100, advice: 'AHA recommends at least 2 inches (5 cm) of compression depth. Use body weight, not arm strength.' },
-    { name: 'Recoil', score: breakdown.recoil ?? 100, advice: 'Allow complete chest recoil between compressions. Lift your hands slightly to avoid leaning.' },
-    { name: 'Compression Fraction', score: breakdown.compressionFraction ?? 100, advice: 'AHA recommends minimizing pauses to keep compression fraction above 60%.' },
-    { name: 'Rate Consistency', score: breakdown.rateConsistency ?? 100, advice: 'A steady rhythm is more effective than varying speed. Use a metronome for pacing.' },
+    { name: '按压节律', score: breakdown.rhythm, advice: 'AHA 建议每分钟 100-120 次按压。可使用节拍器（110 BPM）辅助练习。' },
+    { name: '动作姿势', score: breakdown.form, advice: '注意锁定肘关节、双手居中于胸骨、肩膀正对双手。' },
+    { name: '运动幅度', score: breakdown.depthProxy ?? 100, advice: 'AHA 建议按压深度至少 5 厘米但不超过 6 厘米。请用体重而非手臂力量按压。' },
+    { name: '胸廓回位', score: breakdown.recoil ?? 100, advice: '每次按压后允许胸廓完全回弹。稍微抬起双手，避免倚靠在胸部。' },
+    { name: '按压分数', score: breakdown.compressionFraction ?? 100, advice: 'AHA 建议尽量减少中断，保持按压分数在 60% 以上。' },
+    { name: '频率一致性', score: breakdown.rateConsistency ?? 100, advice: '稳定的节奏比忽快忽慢更有效。可使用节拍器辅助保持节奏。' },
   ];
 
   const weakest = dimensions.reduce((min, d) => d.score < min.score ? d : min, dimensions[0]);
-  return `Focus area: ${weakest.name} (${weakest.score}/100). ${weakest.advice}`;
+  return `重点改进：${weakest.name}（${weakest.score}/100）。${weakest.advice}`;
 }
 
 /** Generate per-cycle comparison text */
@@ -30,10 +30,10 @@ function generateCycleComparison(state: CprSessionState): string | undefined {
   const cycles = state.cycleHistory ?? [];
   if (cycles.length < 2) return undefined;
 
-  const lines: string[] = [`Completed ${cycles.length} cycles:`];
+  const lines: string[] = [`已完成 ${cycles.length} 个周期：`];
   for (const cycle of cycles) {
     lines.push(
-      `  Cycle ${cycle.cycleNumber}: ${cycle.averageRate} CPM avg, ${cycle.compressionCount} compressions, consistency ${cycle.rateConsistency}/100`
+      `  周期 ${cycle.cycleNumber}：平均 ${cycle.averageRate} 次/分钟，共 ${cycle.compressionCount} 次按压，一致性 ${cycle.rateConsistency}/100`
     );
   }
 
@@ -43,11 +43,11 @@ function generateCycleComparison(state: CprSessionState): string | undefined {
   if (Math.abs(rateDelta) > 5) {
     lines.push(
       rateDelta < 0
-        ? `Rate decreased by ${Math.abs(rateDelta)} CPM from cycle 1 to ${last.cycleNumber} — watch for fatigue.`
-        : `Rate increased by ${rateDelta} CPM — you may be speeding up under pressure.`
+        ? `频率从周期 1 到周期 ${last.cycleNumber} 下降了 ${Math.abs(rateDelta)} 次/分钟——请注意疲劳影响。`
+        : `频率上升了 ${rateDelta} 次/分钟——可能在压力下加速了。`
     );
   } else {
-    lines.push('Rate was consistent across cycles — good endurance.');
+    lines.push('各周期频率保持一致——耐力表现良好。');
   }
 
   return lines.join('\n');
@@ -58,26 +58,26 @@ export function generateCprFeedback(
   state: CprSessionState
 ): CprFeedbackSummary {
   const headline = evaluation.totalScore >= 85
-    ? 'CPR workflow is on target.'
+    ? 'CPR 操作达标，表现优秀。'
     : evaluation.totalScore >= 70
-      ? 'CPR workflow is functional with correctable gaps.'
-      : 'CPR workflow needs more guided practice.';
+      ? 'CPR 操作基本合格，有可改进的空间。'
+      : 'CPR 操作需要更多引导练习。';
 
   const parts: string[] = [
-    `Average cadence ${state.averageRate || 0} CPM`,
-    `visibility ${Math.round(state.visibleRatio * 100)}%`,
-    `straight-arm consistency ${Math.round(state.straightArmRatio * 100)}%`,
+    `平均频率 ${state.averageRate || 0} 次/分钟`,
+    `手部可见率 ${Math.round(state.visibleRatio * 100)}%`,
+    `手臂伸直率 ${Math.round(state.straightArmRatio * 100)}%`,
   ];
 
   // Include new metrics in summary when available
   if (state.compressionFraction !== undefined) {
-    parts.push(`compression fraction ${Math.round(state.compressionFraction * 100)}%`);
+    parts.push(`按压分数 ${Math.round(state.compressionFraction * 100)}%`);
   }
   if (state.rateConsistency !== undefined) {
-    parts.push(`rate consistency ${state.rateConsistency}/100`);
+    parts.push(`频率一致性 ${state.rateConsistency}/100`);
   }
   if (state.recoilRatio !== undefined) {
-    parts.push(`recoil ${Math.round(state.recoilRatio * 100)}%`);
+    parts.push(`胸廓回位率 ${Math.round(state.recoilRatio * 100)}%`);
   }
 
   const summary = parts.join(', ') + '.';

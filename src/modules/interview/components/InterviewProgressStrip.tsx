@@ -9,11 +9,11 @@ interface InterviewProgressStripProps {
 }
 
 const PHASES: { key: StripPhase; label: string }[] = [
-  { key: 'BRIEF', label: 'Brief' },
-  { key: 'HISTORY_TAKING', label: 'History' },
-  { key: 'GUIDED_INQUIRY', label: 'Inquiry' },
-  { key: 'DIAGNOSIS_READY', label: 'Diagnosis' },
-  { key: 'REVIEW', label: 'Review' },
+  { key: 'BRIEF', label: '简报' },
+  { key: 'HISTORY_TAKING', label: '病史采集' },
+  { key: 'GUIDED_INQUIRY', label: '引导问诊' },
+  { key: 'DIAGNOSIS_READY', label: '诊断' },
+  { key: 'REVIEW', label: '评估' },
 ];
 
 export default function InterviewProgressStrip({ currentPhase }: InterviewProgressStripProps) {
@@ -45,7 +45,7 @@ export default function InterviewProgressStrip({ currentPhase }: InterviewProgre
                   />
                 )}
                 <span
-                  className={`text-[9px] font-mono uppercase tracking-wider whitespace-nowrap ${
+                  className={`text-[11px] font-sans tracking-wide whitespace-nowrap ${
                     isCurrent ? 'font-bold opacity-100' : isCompleted ? 'font-medium text-[#0d9488]' : 'opacity-30'
                   }`}
                 >

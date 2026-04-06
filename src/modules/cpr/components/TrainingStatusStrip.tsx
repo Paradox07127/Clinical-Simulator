@@ -17,20 +17,20 @@ interface PhaseStep {
 }
 
 const HANDS_ONLY_PHASES: PhaseStep[] = [
-  { key: 'BRIEFING', label: 'Brief' },
-  { key: 'SETUP', label: 'Setup' },
-  { key: 'COMPRESSIONS', label: 'Compressions' },
-  { key: 'COMPLETED', label: 'Results' },
+  { key: 'BRIEFING', label: '简报' },
+  { key: 'SETUP', label: '准备' },
+  { key: 'COMPRESSIONS', label: '按压' },
+  { key: 'COMPLETED', label: '结果' },
 ];
 
 const BLS_PHASES: PhaseStep[] = [
-  { key: 'BRIEFING', label: 'Brief' },
-  { key: 'SCENE_SAFETY', label: 'Scene Safe' },
-  { key: 'CHECK_RESPONSE', label: 'Response' },
-  { key: 'CALL_FOR_HELP', label: 'Call 911' },
-  { key: 'CHECK_BREATHING', label: 'Breathing' },
+  { key: 'BRIEFING', label: '简报' },
+  { key: 'SCENE_SAFETY', label: '现场安全' },
+  { key: 'CHECK_RESPONSE', label: '检查意识' },
+  { key: 'CALL_FOR_HELP', label: '呼叫 120' },
+  { key: 'CHECK_BREATHING', label: '检查呼吸' },
   { key: 'COMPRESSIONS', label: 'CPR' },
-  { key: 'COMPLETED', label: 'Results' },
+  { key: 'COMPLETED', label: '结果' },
 ];
 
 /** Map CprPhase to the phase key used in the strip */
@@ -97,7 +97,7 @@ export default function TrainingStatusStrip({
                   />
                 )}
                 <span
-                  className={`whitespace-nowrap text-[9px] font-mono uppercase tracking-wider ${
+                  className={`whitespace-nowrap text-[11px] font-sans tracking-wide ${
                     isCurrent ? 'font-bold opacity-100' : isCompleted ? 'font-medium text-[#0d9488]' : 'opacity-30'
                   }`}
                 >

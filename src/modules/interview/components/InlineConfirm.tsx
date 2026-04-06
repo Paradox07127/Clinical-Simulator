@@ -16,8 +16,8 @@ export default function InlineConfirm({
   isVisible,
   onConfirm,
   onCancel,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel = '确认',
+  cancelLabel = '取消',
   variant = 'warning',
 }: InlineConfirmProps) {
   const colors = variant === 'danger'

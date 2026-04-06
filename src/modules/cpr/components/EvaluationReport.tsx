@@ -53,20 +53,20 @@ export default function EvaluationReport({
   };
 
   const dimensions: DimensionDef[] = [
-    { key: 'rhythm', label: 'Rhythm', score: evaluation.breakdown.rhythm },
-    { key: 'form', label: 'Form', score: evaluation.breakdown.form },
-    { key: 'readiness', label: 'Readiness', score: evaluation.breakdown.readiness },
+    { key: 'rhythm', label: '按压节律', score: evaluation.breakdown.rhythm },
+    { key: 'form', label: '动作姿势', score: evaluation.breakdown.form },
+    { key: 'readiness', label: '准备度', score: evaluation.breakdown.readiness },
     ...(evaluation.breakdown.depthProxy != null
-      ? [{ key: 'depthProxy', label: 'Compression Depth', score: evaluation.breakdown.depthProxy }]
+      ? [{ key: 'depthProxy', label: '运动幅度', score: evaluation.breakdown.depthProxy }]
       : []),
     ...(evaluation.breakdown.recoil != null
-      ? [{ key: 'recoil', label: 'Chest Recoil', score: evaluation.breakdown.recoil }]
+      ? [{ key: 'recoil', label: '胸廓回位', score: evaluation.breakdown.recoil }]
       : []),
     ...(evaluation.breakdown.compressionFraction != null
-      ? [{ key: 'compressionFraction', label: 'Compression Fraction', score: evaluation.breakdown.compressionFraction }]
+      ? [{ key: 'compressionFraction', label: '按压分数', score: evaluation.breakdown.compressionFraction }]
       : []),
     ...(evaluation.breakdown.rateConsistency != null
-      ? [{ key: 'rateConsistency', label: 'Rate Consistency', score: evaluation.breakdown.rateConsistency }]
+      ? [{ key: 'rateConsistency', label: '频率一致性', score: evaluation.breakdown.rateConsistency }]
       : []),
   ];
 
